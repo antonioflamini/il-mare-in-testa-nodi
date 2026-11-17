@@ -121,7 +121,7 @@ export class Viewer {
     scene.add(sun, sun.target);
     const rim = new THREE.DirectionalLight('#9cc7ff', 0.7); rim.position.set(-20, 10, -25); scene.add(rim);
     // coperta in teak
-    const deckTex = woodTexture('#c99b62', '#8a5a2e', true); deckTex.repeat.set(4, 4);
+    const deckTex = woodTexture('#b58f66', '#76553a', true); deckTex.repeat.set(4, 4);
     this.deck = new THREE.Mesh(new THREE.CircleGeometry(60, 96),
       new THREE.MeshStandardMaterial({ map: deckTex, roughness: 0.85 }));
     this.deck.rotation.x = -Math.PI / 2; this.deck.receiveShadow = true;
@@ -216,19 +216,27 @@ export class Viewer {
   _ease(t) { return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; }
 
   fit(margin = 1.18) {
-    const box = new THREE.Box3().setFromObject(this.holder);
+    // inquadra il "cuore" del nodo: esclude i capi lunghi (dormiente e corrente)
+    this.holder.updateMatrixWorld(true);
+    const box = new THREE.Box3(), p = new THREE.Vector3();
+    this.ropes.forEach((rm) => {
+      const F = rm.frames[0], n = F.length / 3;
+      const a = Math.floor(n * 0.16), b = Math.ceil(n * 0.93);
+      for (let i = a; i < b; i++) box.expandByPoint(p.set(F[3 * i], F[3 * i + 1], F[3 * i + 2]).applyMatrix4(this.holder.matrixWorld));
+    });
+    this.holder.children.forEach(ch => { if (!this.ropes.some(r => r.mesh === ch)) box.union(new THREE.Box3().setFromObject(ch)); });
     const c = box.getCenter(new THREE.Vector3()), size = box.getSize(new THREE.Vector3());
     const v = this.geom.view || {};
-    const radius = Math.max(size.length() / 2, 6);
+    const radius = Math.max(size.length() / 2, 4.5);
     const fov = this.camera.fov * Math.PI / 180;
     const fit = Math.min(fov, 2 * Math.atan(Math.tan(fov / 2) * this.camera.aspect));
     const dist = radius / Math.sin(fit / 2) * margin * (v.zoom ? 1 / v.zoom : 1) * 0.82;
     const el = (v.elev ?? (this.layFlat ? 62 : 18)) * Math.PI / 180;
     const az = (v.az ?? 0) * Math.PI / 180;
-    const ground = this.layFlat ? box.min.y : (v.ground ?? box.min.y);
+    const full = new THREE.Box3().setFromObject(this.holder);
+    const ground = this.layFlat ? full.min.y : (v.ground ?? full.min.y);
     this.deck.position.y = ground - 0.001; this.shadowOnly.position.y = ground;
-    if (this.layFlat) this.holder.position.y = -box.min.y + 0.0, this.deck.position.y = -0.001, this.shadowOnly.position.y = 0;
-    const box2 = new THREE.Box3().setFromObject(this.holder); box2.getCenter(c);
+    if (this.layFlat) { const dy = -full.min.y; this.holder.position.y += dy; c.y += dy; this.deck.position.y = -0.001; this.shadowOnly.position.y = 0; }
     this.controls.target.copy(c);
     this.camera.position.set(c.x + dist * Math.cos(el) * Math.sin(az), c.y + dist * Math.sin(el), c.z + dist * Math.cos(el) * Math.cos(az));
     this.camera.near = dist / 50; this.camera.far = dist * 8; this.camera.updateProjectionMatrix();

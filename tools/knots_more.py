@@ -39,7 +39,7 @@ def volta_tonda():
     R = [rope3d(pts)]
     return dict(ropes=R, props=[ring, bolt, beam],
                 pulls=[dict(rope=0, at=0, dir=[0, -1, 0]), dict(rope=0, at=1, dir=[-1, 0, 0], w=0.35)],
-                view=dict(mode='stand', elev=8, az=-25, zoom=1.25, ground=-17.5), jam=0.25, snug=0.8)
+                view=dict(mode='stand', elev=8, az=-25, zoom=1.5, ground=-17.5), jam=0.25, snug=0.8)
 
 
 def _turn(a0, a1, x0, x1, Rw, bumps=(), n=None):
@@ -128,7 +128,7 @@ def galloccia():
     R = [rope3d(pts)]
     return dict(ropes=R, props=props,
                 pulls=[dict(rope=0, at=0, dir=[-1, 0, 0.45], max=1.5), dict(rope=0, at=1, dir=[-0.4, -0.3, -1], w=0.25, max=0.4)],
-                view=dict(mode='stand', elev=40, az=-28, zoom=1.6, ground=0), jam=0.3, snug=1.0)
+                view=dict(mode='stand', elev=40, az=-28, zoom=0.95, ground=0), jam=0.3, snug=1.0)
 
 
 @knot
