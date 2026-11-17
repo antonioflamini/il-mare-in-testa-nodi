@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Il Mare in Testa · Nodi</title>
+<meta name="description" content="I nodi di bordo in 3D realistico, passo passo, con la storia, i trucchi e i quiz. Dalla collana Il Mare in Testa.">
+<meta name="theme-color" content="#0B2A4A">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="img/icon-192.png">
+<link rel="apple-touch-icon" href="img/icon-192.png">
+<link rel="stylesheet" href="css/app.css">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="#/">
+    <img src="img/icon-192.png" alt="" width="34" height="34">
+    <span><b>IL MARE IN TESTA</b><small>Nodi · il nodario di bordo</small></span>
+  </a>
+  <nav class="tabs" aria-label="Sezioni">
+    <a href="#/" data-tab="nodario">Nodario</a>
+    <a href="#/allenati" data-tab="allenati">Allenati</a>
+    <a href="#/progressi" data-tab="progressi">Il mio nodario</a>
+    <a href="#/info" data-tab="info">Info</a>
+  </nav>
+</header>
+
+<main id="app">
+  <!-- NODARIO -->
+  <section id="view-nodario" class="view nodario">
+    <aside class="list" aria-label="Elenco dei nodi">
+      <div class="search">
+        <input id="q" type="search" placeholder="Cerca un nodo…" aria-label="Cerca un nodo">
+        <label class="chip"><input type="checkbox" id="onlyExam"> Solo patente</label>
+      </div>
+      <div id="families"></div>
+    </aside>
+
+    <div class="stage">
+      <div id="viewer" class="viewer" aria-label="Animazione 3D del nodo">
+        <div class="loading" id="loading">Preparo la cima…</div>
+        <div class="caption" id="caption" aria-live="polite"></div>
+        <div class="hint">Trascina per ruotare · rotella o due dita per lo zoom</div>
+      </div>
+      <div class="controls" role="toolbar" aria-label="Controlli animazione">
+        <button id="bPrev" title="Passo precedente" aria-label="Passo precedente">⏮</button>
+        <button id="bPlay" class="primary" title="Avvia / pausa" aria-label="Avvia o metti in pausa">▶</button>
+        <button id="bNext" title="Passo successivo" aria-label="Passo successivo">⏭</button>
+        <input id="scrub" type="range" min="0" max="1.35" step="0.001" value="0" aria-label="Posizione nell'animazione">
+        <select id="speed" aria-label="Velocità">
+          <option value="0.5">0,5×</option><option value="1" selected>1×</option><option value="1.6">1,6×</option>
+        </select>
+        <button id="bLoop" class="toggle on" title="Ripeti" aria-pressed="true">⟲</button>
+        <button id="bMirror" class="toggle" title="Mancini: vista a specchio" aria-pressed="false">⇋</button>
+        <button id="bBg" class="toggle on" title="Coperta in teak / sfondo neutro" aria-pressed="true">▦</button>
+        <button id="bHome" title="Rimetti la vista" aria-label="Rimetti la vista">⌂</button>
+        <button id="bFull" title="Schermo intero" aria-label="Schermo intero">⛶</button>
+      </div>
+    </div>
+
+    <article class="card" id="card" aria-live="polite"></article>
+  </section>
+
+  <!-- ALLENATI -->
+  <section id="view-allenati" class="view page">
+    <h1>Allenati</h1>
+    <p class="lead">Due modi di mettersi alla prova. Le risposte sbagliate tornano più spesso.</p>
+    <div class="modes">
+      <button class="mode" data-mode="riconosci"><b>Riconosci il nodo</b><span>Ti mostro un nodo in 3D: come si chiama?</span></button>
+      <button class="mode" data-mode="quiz"><b>Domande</b><span>Quiz a tre risposte, come all’esame.</span></button>
+    </div>
+    <div class="trainer-viewer" id="tv" hidden></div>
+    <div id="trainer"></div>
+  </section>
+
+  <!-- PROGRESSI -->
+  <section id="view-progressi" class="view page">
+    <h1>Il mio nodario</h1>
+    <p class="lead">Segna i nodi che sai fare a occhi chiusi. Restano su questo dispositivo.</p>
+    <div id="progress"></div>
+  </section>
+
+  <!-- INFO -->
+  <section id="view-info" class="view page">
+    <h1>Il Mare in Testa · Nodi</h1>
+    <p class="lead">Il nodario di bordo della collana <b>Il Mare in Testa</b>: i nodi che servono davvero in barca, a vela e a motore, in tre dimensioni.</p>
+    <h2>Come sono fatte le animazioni</h2>
+    <p>Ogni nodo è ricostruito da un simulatore fisico della cima: la cima ha un diametro, non può attraversare sé stessa né gli oggetti, e alla fine viene messa in tensione tirando i capi, come si fa davvero per «serrare» un nodo. Il capo che lavora ha la fasciatura rossa, il dormiente quella scura.</p>
+    <h2>I libri</h2>
+    <ul>
+      <li><b>Il Mare in Testa · Volume I</b> — patente nautica entro le 12 miglia e D1 (i nodi sono al capitolo 2).</li>
+      <li><b>Il Mare in Testa · Volume II</b> — oltre le 12 miglia.</li>
+      <li><b>Il Mare in Testa · I Nodi</b> — il quaderno dei nodi, con le stesse illustrazioni e un QR per ogni nodo.</li>
+    </ul>
+    <p>Aggiornamenti ed errata: <a href="https://antonioflamini.github.io/il-mare-in-testa/" rel="noopener">antonioflamini.github.io/il-mare-in-testa</a> · Simulatore quiz: <a href="https://antonioflamini.github.io/il-mare-in-testa-simulatore/" rel="noopener">il-mare-in-testa-simulatore</a></p>
+    <div class="box trappola"><b>Attenzione</b><p>Questa app insegna, non sostituisce la pratica con un istruttore. Quando da un nodo dipendono persone o barche, provalo a mano, sotto carico, prima di fidarti.</p></div>
+    <p class="small">© 2026 Antonio Flamini. Testi, modelli 3D e illustrazioni realizzati per questo progetto.</p>
+  </section>
+</main>
+
+<script type="module" src="js/app.js"></script>
+<script>
+  if ('serviceWorker' in navigator) addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+</script>
+</body>
+</html>

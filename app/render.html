@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="it"><head><meta charset="utf-8"><title>Render nodo</title>
+<style>html,body{margin:0;height:100%;background:transparent}#v{width:100vw;height:100vh}</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+</head><body><div id="v"></div>
+<script type="module">
+// Pagina di servizio: rende un fotogramma di un nodo (per il libro e i controlli).
+import { Viewer } from './js/viewer.js';
+const q = new URLSearchParams(location.search);
+const v = new Viewer(document.getElementById('v'), { capture: true, backdrop: q.get('bg') || 'deck', pixelRatio: 1 });
+const geom = await (await fetch('data/geom.json?' + Date.now())).json();
+const id = q.get('k');
+const g = geom[id];
+['az', 'elev', 'zoom'].forEach(k => { if (q.get(k)) g.view = Object.assign({}, g.view, { [k]: +q.get(k) }); });
+v.load(id, g);
+v.render(+(q.get('g') ?? 1.35));
+v.draw();
+const pre = document.createElement('pre');
+pre.textContent = v.renderer.domElement.toDataURL('image/png');
+document.body.appendChild(pre);
+document.title = 'OK';
+</script></body></html>

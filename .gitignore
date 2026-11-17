@@ -1,0 +1,5 @@
+# il libro va in vendita: sorgenti e PDF restano in locale
+book/
+__pycache__/
+*.pyc
+.DS_Store
