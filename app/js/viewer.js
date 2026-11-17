@@ -165,21 +165,27 @@ export class Viewer {
     this.root.add(holder);
     (geom.props || []).forEach(p => holder.add(buildProp(p)));
     const kinds = geom.colors || ['main', 'second', 'third'];
+    const solid = geom.solid || {};
+    this.isSolid = geom.ropes.map((_, i) => !!solid[String(i)]);
     geom.ropes.forEach((frames, i) => {
       const n = frames[0].length / 3;
-      const rm = new RopeMesh(n, ropeMaterial(kinds[i] || 'main', this.renderer), {
-        radius: (geom.radii && geom.radii[i]) || 0.5,
+      const sname = solid[String(i)];
+      const material = !this.isSolid[i] ? ropeMaterial(kinds[i] || 'main', this.renderer)
+        : sname.startsWith('rope:') ? ropeMaterial(sname.slice(5), this.renderer) : mat(sname);
+      const rm = new RopeMesh(n, material, {
+        radius: (geom.radii && geom.radii[i]) || 0.5, radial: this.isSolid[i] ? 32 : 18,
         whip: i === 0 ? '#b8231c' : '#0b2a4a', whipStand: i === 0 ? '#14202b' : '#4a1d0e' });
+      rm.solid = this.isSolid[i]; rm.plain = rm.solid;
       rm.frames = frames.map(f => Float32Array.from(f));
       rm.buf = new Float32Array(frames[0].length);
       holder.add(rm.mesh);
       this.ropes.push(rm);
     });
     // ordine di comparsa delle cime: [inizio, fine, quota gia' visibile]
-    const L = geom.lengths;
+    const L = geom.lengths.map((l, i) => this.isSolid[i] ? 0 : l);
     this.reveal = geom.reveal || (() => {
       const tot = L.reduce((a, b) => a + b, 0); let acc = 0;
-      return L.map(l => { const a = acc / tot; acc += l; return [a, acc / tot, 0]; });
+      return L.map(l => { if (!l) return [0, 0.001, 1]; const a = acc / tot; acc += l; return [a, acc / tot, 0]; });
     })();
     this.totalLen = L.reduce((a, b) => a + b, 0);
     this.tieSeconds = Math.max(5, Math.min(16, this.totalLen / 5.5)) * (meta.tempo || 1);
@@ -208,6 +214,7 @@ export class Viewer {
       const x = this._ease(tight) * K, k0 = Math.min(Math.floor(x), K - 1), f = x - k0;
       const A = F[k0], B = F[Math.min(k0 + 1, K)], out = rm.buf;
       for (let j = 0; j < out.length; j++) out[j] = A[j] + (B[j] - A[j]) * f;
+      if (rm.solid) rv = 1;
       rm.mesh.visible = rv > 0.002;
       rm.update(out, Math.max(rv, 0.004));
     });
@@ -221,7 +228,7 @@ export class Viewer {
     const box = new THREE.Box3(), p = new THREE.Vector3();
     this.ropes.forEach((rm) => {
       const F = rm.frames[0], n = F.length / 3;
-      const a = Math.floor(n * 0.16), b = Math.ceil(n * 0.93);
+      const a = rm.solid ? Math.floor(n * 0.3) : Math.floor(n * 0.16), b = rm.solid ? Math.ceil(n * 0.7) : Math.ceil(n * 0.93);
       for (let i = a; i < b; i++) box.expandByPoint(p.set(F[3 * i], F[3 * i + 1], F[3 * i + 2]).applyMatrix4(this.holder.matrixWorld));
     });
     this.holder.children.forEach(ch => { if (!this.ropes.some(r => r.mesh === ch)) box.union(new THREE.Box3().setFromObject(ch)); });

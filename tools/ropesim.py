@@ -95,29 +95,42 @@ def find_crossings(ropes):
     return enc, xs
 
 
-def lift(ropes, seq, h=0.62, width=1.5):
-    """Applica la sequenza 'OUOU...' agli incontri in ordine di percorrenza."""
+def lift(ropes, seq, h=0.62, width=1.5, solid=()):
+    """Applica la sequenza 'OUOU...' agli incontri in ordine di percorrenza.
+    Gli incontri sulle cime 'solid' (tubi, aste, anelli) non vanno nella
+    sequenza: prendono automaticamente il contrario della cima che li incrocia,
+    e i solidi restano dritti (z = 0)."""
+    solid = set(solid)
     enc, xs = find_crossings(ropes)
     seq = seq.replace(' ', '')
-    if len(enc) != len(seq):
-        msg = [f"incontri trovati {len(enc)} ma sequenza lunga {len(seq)}"]
-        for k, (r, s, c) in enumerate(enc):
-            P = ropes[r]; i = np.searchsorted(arclen(P), s)
-            msg.append(f"  #{k} rope{r} s={s:.1f} xy={P[min(i, len(P)-1), :2].round(1)} incrocio {c}")
-        raise ValueError("\n".join(msg))
+    live = [k for k, e in enumerate(enc) if e[0] not in solid]
+    if len(live) != len(seq):
+        msg = [f"incontri (cime) trovati {len(live)} ma sequenza lunga {len(seq)}"]
+        for n, k in enumerate(live):
+            r, s_, c = enc[k]
+            P = ropes[r]; i = np.searchsorted(arclen(P), s_)
+            msg.append(f"  #{n} rope{r} s={s_:.1f} xy={P[min(i, len(P)-1), :2].round(1)} incrocio {c}")
+        raise ValueError(chr(10).join(msg))
+    letter = {}
+    for n, k in enumerate(live):
+        letter[k] = seq[n]
     seen = {}
-    for k, (r, s, c) in enumerate(enc):
-        if c in seen and seen[c] == seq[k]:
-            raise ValueError(f"incrocio {c} ha due '{seq[k]}' (incontri {k})")
-        seen[c] = seq[k]
+    for k in live:
+        c = enc[k][2]
+        if c in seen and seen[c] == letter[k]:
+            raise ValueError(f"incrocio {c} ha due '{letter[k]}'")
+        seen[c] = letter[k]
     out = []
     for ri, P in enumerate(ropes):
-        P = P.copy(); s = arclen(P)
-        for k, (r, sc, c) in enumerate(enc):
-            if r != ri:
-                continue
-            sign = 1 if seq[k] == 'O' else -1
-            P[:, 2] += sign * h * np.exp(-((s - sc) / width) ** 2)
+        P = P.copy()
+        if ri not in solid:
+            s_ = arclen(P)
+            for k in live:
+                r, sc, c = enc[k]
+                if r != ri:
+                    continue
+                sign = 1 if letter[k] == 'O' else -1
+                P[:, 2] += sign * h * np.exp(-((s_ - sc) / width) ** 2)
         out.append(P)
     return out
 
@@ -204,6 +217,11 @@ class Rope:
         same = self.rid[a] == self.rid[b]
         far = np.abs(self.idx[a] - self.idx[b]) > self.skip_r[self.rid[a]]
         keep = ~same | far
+        sol = getattr(self, 'solid', [])
+        if sol:
+            iss = np.isin(self.rid[a], sol)
+            keep &= ~(same & iss)           # un solido non urta se stesso
+            keep &= ~(iss & np.isin(self.rid[b], sol))
         self.pairs = (a[keep], b[keep])
 
     def collide(self, X, mobile):
@@ -285,8 +303,8 @@ class Rope:
 
     def relax(self, iters=600, alpha=0.05, verbose=False, fixed_rope=None):
         mobile = np.ones(len(self.X))
-        if fixed_rope is not None:
-            mobile[self.rid == fixed_rope] = 0.0
+        for fr in ([fixed_rope] if isinstance(fixed_rope, int) else (fixed_rope or [])):
+            mobile[self.rid == fr] = 0.0
         for it in range(iters):
             if it % 8 == 0:
                 self._refresh_pairs()
@@ -355,7 +373,7 @@ class Rope:
         pr = max(0.0, (self.gap * (self.rad[a] + self.rad[b]) - d).max())
         for p in self.props:
             Y = self.X.copy(); p.push(Y, self.rad[:, None])
-            pr = max(pr, 0.5 * np.linalg.norm(Y - self.X, axis=1).max())
+            pr = max(pr, np.linalg.norm(Y - self.X, axis=1).max())
         return pr
 
     def tighten(self, pulls, iters=3000, step=0.025, frames=7, alpha=0.04,
@@ -376,6 +394,8 @@ class Rope:
         for p in P:
             by_rope.setdefault(p['rope'], []).append(p)
         mobile = np.ones(len(self.X))
+        for fr in getattr(self, 'solid', []):
+            mobile[self.rid == fr] = 0.0
         for p in P:
             mobile[self.start[p['rope']] + p['i']] = 0
 
@@ -403,6 +423,7 @@ class Rope:
             pen = self.penetration()
             self.collide(self.X, mobile); self.props_push(self.X)
             self._clamp(prev, 0.15)
+            self.props_push(self.X)          # mai dentro un oggetto, nemmeno dopo il limite di passo
             stretch = self.stretch_total()
             jam = pen > self.jam or stretch > 1.02
             for p in P:
@@ -427,13 +448,13 @@ class Rope:
         for it in range(200):           # assestamento: elimina ogni compenetrazione
             if it % 5 == 0:
                 self._refresh_pairs()
-            if it < 60:
-                passes()
+            prev = self.X.copy()
             for k in range(4):
                 self.lengths(self.X, mobile)
                 self.bend(self.X, mobile)
                 self.collide(self.X, mobile); self.props_push(self.X)
             self.smooth(self.X, mobile, alpha * 0.3)
+            self._clamp(prev, 0.1); self.props_push(self.X)
         hist.append(self.X.copy())
         self.moved = [round(p['moved'], 2) for p in P if p['w']]
         disp = np.array([0] + [np.abs(hist[k] - hist[k - 1]).sum() for k in range(1, len(hist))])

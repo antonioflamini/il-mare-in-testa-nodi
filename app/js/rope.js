@@ -171,8 +171,8 @@ export class RopeMesh {
       // capo legato (whipping) in testa e sul dormiente
       const sw = s[i];
       let w = 0, ws = 0;
-      if (sw > sTip - whipLen && sw <= sTip + 1e-3) w = 1;
-      if (sw < whipLen * 0.8) ws = 1;
+      if (!this.plain && sw > sTip - whipLen && sw <= sTip + 1e-3) w = 1;
+      if (!this.plain && sw < whipLen * 0.8) ws = 1;
       for (let j = 0; j <= this.radial; j++) {
         const a = (j / this.radial) * Math.PI * 2;
         const cx = Math.cos(a), sy = Math.sin(a);
@@ -197,7 +197,7 @@ export class RopeMesh {
       const base = this.capStart + c * (R + 1);
       const t = T[ri].clone().multiplyScalar(dir);
       const ctr = P[ri].clone().addScaledVector(t, this.radius * 0.18);
-      const cc = c === 1 ? this.whip : this.whipStand;
+      const cc = this.plain ? new THREE.Color(0.625, 0.625, 0.625) : (c === 1 ? this.whip : this.whipStand);
       this._setV(base, ctr, t, 0, 0.5, cc);
       for (let j = 0; j <= this.radial; j++) {
         const o = ri * R + j;

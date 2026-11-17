@@ -8,6 +8,11 @@ import numpy as np
 from ropesim import Rope, resample
 from knots_src import KNOTS
 import knots_more  # noqa: F401  (registra gli altri nodi)
+import knots_v2  # noqa: F401
+import knots_v3  # noqa: F401
+import knots_v4  # noqa: F401
+import knots_v5  # noqa: F401
+import knots_v6  # noqa: F401
 
 OUT = os.path.join(os.path.dirname(__file__), '..', 'app', 'data', 'geom.json')
 EXPORT_STEP = 0.32
@@ -47,6 +52,10 @@ def bake(kid, verbose=False):
     spec = KNOTS[kid]()
     t0 = time.time()
     sim = Rope(spec['ropes'], spec.get('props', []), radii=spec.get('radii'))
+    solid = [int(k) for k in spec.get('solid', {})]
+    sim.solid = solid
+    if solid and spec.get('fixed_rope') is None:
+        spec['fixed_rope'] = solid
     pen = sim.relax(iters=spec.get('relax_iters', 700), alpha=spec.get('relax_alpha', 0.04), verbose=verbose, fixed_rope=spec.get('fixed_rope'))
     g0 = sim.min_gap()
     res = sim.tighten(spec['pulls'], iters=spec.get('iters', 3000), step=spec.get('step', 0.025),
@@ -69,6 +78,7 @@ def bake(kid, verbose=False):
         colors=spec.get('colors', None),
         radii=spec.get('radii', None),
         reveal=spec.get('reveal', None),
+        solid={str(k): v for k, v in spec.get('solid', {}).items()},
     )
     print(f"{kid:28s} gap sciolto {g0:.2f}  gap stretto {g1:.2f}  pen {pen:.3f}  "
           f"punti {sum(n_pts)}  tirato {sim.moved}  {time.time() - t0:.1f}s", flush=True)
@@ -85,8 +95,14 @@ def main():
     if os.path.exists(OUT):
         with open(OUT, encoding='utf-8') as f:
             db = json.load(f)
+    errs = []
     for kid in ids:
-        db[kid] = bake(kid, verbose)
+        try:
+            db[kid] = bake(kid, verbose)
+        except Exception as ex:
+            errs.append(kid); print(f'ERRORE {kid}: {str(ex)[:300]}', flush=True)
+    if errs:
+        print('nodi con errori:', errs)
     db = {k: db[k] for k in KNOTS if k in db}
     with open(OUT, 'w', encoding='utf-8') as f:
         json.dump(db, f, separators=(',', ':'))

@@ -1,0 +1,6 @@
+<!doctype html><meta charset="utf-8"><title>export</title><body><script type="module">
+import { NODI, FAMIGLIE } from '../app/data/knots.js';
+const pre = document.createElement('pre'); pre.id = 'json';
+pre.textContent = JSON.stringify({ NODI, FAMIGLIE });
+document.body.appendChild(pre); document.title = 'OK';
+</script></body>
