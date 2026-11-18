@@ -15,8 +15,14 @@ for n in D['NODI']:
         nxt = ats[i + 1] if i + 1 < len(ats) else 1.35
         g = 1.35 if a >= 1 else min(1.0, nxt)      # il nodo come appare alla fine del passo
         jobs.append((kid, g, f'{kid}_p{i + 1}.png', 700, 560))
+LOG = os.path.join(ROOT, 'book', 'renders.log')
+DONE = set(open(LOG, encoding='utf-8').read().split()) if os.environ.get('RESUME') and os.path.exists(LOG) else set()
+
+
 def run(j):
     kid, g, name, w, h = j
+    if name in DONE:
+        return name
     shot(kid, g, os.path.join(OUT, name), w, h, 'paper')
     return name
 with ThreadPoolExecutor(3) as ex:

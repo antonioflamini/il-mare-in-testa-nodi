@@ -13,7 +13,7 @@ def shot(kid, g, out, w=900, h=700, bg='deck', extra='', tries=3):
 
 def _shot(kid, g, out, w=900, h=700, bg='deck', extra=''):
     ud = tempfile.mkdtemp(prefix='edge-shot-')
-    url = f"http://127.0.0.1:8765/app/render.html?k={kid}&g={g}&bg={bg}{extra}"
+    url = f"http://127.0.0.1:8771/app/render.html?k={kid}&g={g}&bg={bg}{extra}"
     r = subprocess.run([EDGE, '--headless=new', '--use-angle=swiftshader', '--enable-unsafe-swiftshader',
                         '--hide-scrollbars', f'--window-size={w},{h}', '--virtual-time-budget=30000',
                         f'--user-data-dir={ud}', '--dump-dom', url], capture_output=True, text=True, timeout=180)

@@ -437,3 +437,27 @@ def _briol():
 
 
 _K['matassa-briol'] = _briol
+
+
+def _bowline_bight():
+    """Gassa d'amante con cima doppia (forma finale corretta): due dormienti,
+    tana doppia, due occhi in basso, e il doppino che chiude abbracciando i
+    dormienti sopra la tana (nessun capo libero)."""
+    base = BOW_HEAD + BOW_EYE + BOW_WORK[:9] + [(-1.3, 12.25)]
+    B3 = flatm([base], BOW_MARKS, tol=0.9)[0]           # linea d'asse con sopra/sotto
+    xy = B3[:, :2]
+    t = np.gradient(xy, axis=0); t /= np.linalg.norm(t, axis=1)[:, None] + 1e-9
+    nrm = np.c_[-t[:, 1], t[:, 0]]
+    d = 0.56
+    A = np.c_[xy + nrm * d, B3[:, 2]]
+    Bv = np.c_[xy - nrm * d, B3[:, 2]]
+    end, tv, nv = xy[-1], t[-1], nrm[-1]
+    U = [(*(end + tv * 0.6 * np.sin(a) + nv * d * np.cos(a)), B3[-1, 2]) for a in np.linspace(0.3, np.pi - 0.3, 6)]
+    path = [tuple(p) for p in A[::3]] + U + [tuple(p) for p in Bv[::-1][::3]]
+    return dict(ropes=[rope3d(path)],
+                props=[dict(type='cyl', c=[0, -1.4, 2.6], axis=[0, 0, 1], r=2.4, h=7.4, mat='wood', hidden=True)],
+                pulls=[dict(rope=0, at=0, dir=[0, 1, 0], max=1.5), dict(rope=0, at=1, dir=[0, 1, 0], max=1.5)],
+                view=dict(elev=70, zoom=0.9), jam=0.25, snug=0.6)
+
+
+_K['gassa-cima-doppia'] = _bowline_bight
