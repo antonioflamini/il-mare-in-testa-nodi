@@ -466,6 +466,26 @@ class Rope:
             out.append((self.split(hist[k]), k))
         return out
 
+    def clean(self, X, iters=80):
+        """Toglie le compenetrazioni residue da un fotogramma senza cambiarne la forma."""
+        keep = self.X
+        self.X = X.copy()
+        mobile = np.ones(len(self.X))
+        for fr in getattr(self, 'solid', []):
+            mobile[self.rid == fr] = 0.0
+        for st, r in zip(self.start, self.ropes):
+            mobile[st] = 0; mobile[st + len(r) - 1] = 0
+        for it in range(iters):
+            if it % 5 == 0:
+                self._refresh_pairs()
+            for k in range(3):
+                self.collide(self.X, mobile); self.props_push(self.X)
+                self.lengths(self.X, mobile)
+            self.props_push(self.X)
+        out = self.X
+        self.X = keep
+        return out
+
     def split(self, X=None):
         X = self.X if X is None else X
         return [X[st:st + len(r)].copy() for st, r in zip(self.start, self.ropes)]

@@ -151,3 +151,17 @@ def vturn(a0, a1, y0, y1, R, ax=0.0, az=0.0, bumps=(), n=None):
         t = np.radians(th)
         out.append((ax + r * np.sin(t), y, az + r * np.cos(t)))
     return out
+
+
+def flat_alt(ropes2d, solid=(), h=0.62, width=1.5, start='O'):
+    """Diagramma ALTERNATO: lungo la cima gli incroci si alternano sopra/sotto
+    (come nelle trame dei tappeti e degli incappellaggi)."""
+    from ropesim import find_crossings, lift
+    R = [rope3d([(p[0], p[1], 0.0) for p in r]) for r in ropes2d]
+    enc, xs = find_crossings(R)
+    seq, cur = [], start
+    for e in enc:
+        if e[0] in solid:
+            continue
+        seq.append(cur); cur = 'U' if cur == 'O' else 'O'
+    return lift(R, ''.join(seq), h=h, width=width, solid=solid)

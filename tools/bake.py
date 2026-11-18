@@ -13,6 +13,7 @@ import knots_v3  # noqa: F401
 import knots_v4  # noqa: F401
 import knots_v5  # noqa: F401
 import knots_v6  # noqa: F401
+import knots_v7  # noqa: F401
 
 OUT = os.path.join(os.path.dirname(__file__), '..', 'app', 'data', 'geom.json')
 EXPORT_STEP = 0.32
@@ -62,6 +63,10 @@ def bake(kid, verbose=False):
                       frames=spec.get('frames', 7), alpha=spec.get('alpha', 0.04),
                       pins=spec.get('pins', ()), jam=spec.get('jam', 0.08), snug=spec.get('snug', 0.55), verbose=verbose)
     frames = [f for f, k in res]
+    cleaned = [frames[0]]
+    for f in frames[1:]:
+        cleaned.append(sim.split(sim.clean(np.vstack(f))))
+    frames = cleaned
     sim.X = np.vstack(frames[-1]); g1 = sim.min_gap()
     lens = [float(np.sum(np.linalg.norm(np.diff(r, axis=0), axis=1))) for r in frames[0]]
     weights = []

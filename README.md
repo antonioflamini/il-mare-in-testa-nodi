@@ -1,6 +1,6 @@
 # Il Mare in Testa · Nodi
 
-Il nodario di bordo della collana **Il Mare in Testa** di Antonio Flamini: i nodi che servono davvero in barca, in 3D realistico, passo passo, con la storia, il trucco del nostromo, la trappola d'esame e i quiz.
+Il nodario di bordo della collana **Il Mare in Testa** di Antonio Flamini: tutti i nodi di uso nautico (70), in 3D realistico, passo passo, con la storia, il trucco del nostromo, la trappola d'esame e i quiz.
 
 **App:** https://antonioflamini.github.io/il-mare-in-testa-nodi/ (funziona anche offline e si può installare sul telefono).
 

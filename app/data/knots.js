@@ -1,4 +1,6 @@
 // Il Mare in Testa · Nodi — contenuti del nodario.
+import { NODI2 } from './knots2.js';
+import { NODI3 } from './knots3.js';
 // "at" = punto dell'animazione (0 = inizio legatura, 1 = nodo legato, >1 = serraggio).
 
 export const FAMIGLIE = [
@@ -257,3 +259,5 @@ export const NODI = [
     quiz: [{ q: 'Il fiocco fiammingo è adatto:', a: ['in navigazione, per una cima che deve filare', 'in porto, per tenere in ordine la coperta', 'per unire due cime'], ok: 1 }],
   },
 ];
+
+NODI.push(...NODI2, ...NODI3);

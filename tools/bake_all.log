@@ -1,0 +1,89 @@
+nodo-semplice                gap sciolto 1.19  gap stretto 1.02  pen 0.000  punti 180  tirato [14.33, 14.33]  8.0s
+savoia                       gap sciolto 1.14  gap stretto 1.01  pen 0.000  punti 170  tirato [9.05, 9.05]  5.5s
+gassa-damante                gap sciolto 1.02  gap stretto 1.02  pen 0.000  punti 260  tirato [1.57, 0.47]  4.1s
+piano                        gap sciolto 1.02  gap stretto 1.01  pen 0.000  punti 234  tirato [4.8, 2.88, 4.8, 2.88]  5.8s
+scotta                       gap sciolto 1.02  gap stretto 0.97  pen 0.000  punti 204  tirato [3.7, 1.48, 3.7, 1.11]  4.5s
+parlato                      gap sciolto 1.02  gap stretto 0.80  pen 0.002  punti 135  tirato [0.88, 0.44]  2.1s
+   ATTENZIONE parlato: compenetrazione possibile
+stivatore                    gap sciolto 1.02  gap stretto 1.02  pen 0.000  punti 231  tirato [10.98, 10.98]  11.0s
+volta-tonda                  gap sciolto 1.01  gap stretto 0.96  pen 0.005  punti 162  tirato [2.85, 1.0]  5.1s
+bozza                        gap sciolto 1.01  gap stretto 0.99  pen 0.007  punti 257  tirato [2.02, 0.61]  4.0s
+bocca-di-lupo                gap sciolto 1.02  gap stretto 0.91  pen 0.000  punti 131  tirato [1.35, 1.35]  2.4s
+galloccia                    gap sciolto 1.01  gap stretto 1.02  pen 0.010  punti 303  tirato [1.52, 0.41]  6.7s
+fiocco-fiammingo             gap sciolto 1.02  gap stretto 1.02  pen 0.000  punti 334  tirato []  2.2s
+ancorotto                    gap sciolto 0.99  gap stretto 0.89  pen 0.031  punti 201  tirato [4.27, 0.61]  5.8s
+semplice-doppio              gap sciolto 1.02  gap stretto 1.02  pen 0.000  punti 179  tirato [5.4, 5.4]  3.4s
+semplice-multiplo            gap sciolto 1.02  gap stretto 1.02  pen 0.001  punti 376  tirato [21.8, 21.8]  21.0s
+uli                          gap sciolto 1.02  gap stretto 1.02  pen 0.003  punti 472  tirato [26.85, 26.85]  40.9s
+gassa-rapido                 gap sciolto 1.02  gap stretto 1.02  pen 0.000  punti 260  tirato [1.57, 0.47]  3.7s
+gassa-olanda                 gap sciolto 1.02  gap stretto 1.02  pen 0.000  punti 265  tirato [1.62, 0.49]  3.8s
+gassa-ganciata               gap sciolto 1.02  gap stretto 1.02  pen 0.002  punti 293  tirato [2.52, 0.8]  4.9s
+gassa-scorsoia               gap sciolto 1.02  gap stretto 1.02  pen 0.000  punti 438  tirato [3.02, 0.91]  7.4s
+  (annotazioni non usate: [(0.75, 2.8)] )
+scotta-doppio                gap sciolto 1.02  gap stretto 0.98  pen 0.002  punti 265  tirato [6.33, 2.53, 6.33, 1.9]  7.9s
+  (annotazioni non usate: [(1.45, 4.95), (0.75, 3.7), (0.75, 2.75)] )
+scotta-triplo                gap sciolto 1.01  gap stretto 0.95  pen 0.010  punti 335  tirato [6.38, 2.55, 6.38, 1.91]  11.5s
+becket                       gap sciolto 1.02  gap stretto 0.99  pen 0.000  punti 190  tirato [3.8, 1.52, 3.8, 1.14]  3.9s
+scotta-tre-vie               gap sciolto 1.01  gap stretto 0.94  pen 0.010  punti 337  tirato [1.1, 0.44, 1.1, 0.33, 1.1, 0.33]  6.8s
+barcaiolo-ganciato           gap sciolto 1.01  gap stretto 0.97  pen 0.010  punti 144  tirato [8.5, 0.5]  7.8s
+barcaiolo-doppino            gap sciolto 1.02  gap stretto 0.80  pen 0.002  punti 138  tirato [0.95, 0.48]  8.0s
+   ATTENZIONE barcaiolo-doppino: compenetrazione possibile
+drizza                       gap sciolto 1.00  gap stretto 0.80  pen 0.019  punti 180  tirato [4.25, 0.61]  22.7s
+   ATTENZIONE drizza: compenetrazione possibile
+drizza-di-mura               gap sciolto 1.02  gap stretto 0.75  pen 0.005  punti 160  tirato [0.65, 0.2]  4.6s
+   ATTENZIONE drizza-di-mura: compenetrazione possibile
+drizza-ganciato              gap sciolto 1.01  gap stretto 0.85  pen 0.010  punti 174  tirato [13.25, 0.61]  12.8s
+   ATTENZIONE drizza-ganciato: compenetrazione possibile
+brancarella                  gap sciolto 1.02  gap stretto 0.88  pen 0.002  punti 215  tirato [20.92, 0.61]  16.3s
+   ATTENZIONE brancarella: compenetrazione possibile
+volta-di-bitta               gap sciolto 1.01  gap stretto 1.12  pen 0.009  punti 173  tirato [14.1, 8.46]  9.4s
+carrick                      gap sciolto 1.01  gap stretto 0.93  pen 0.008  punti 194  tirato [0.0, 0.0, 0.0, 0.0]  1.9s
+gasse-collegate              gap sciolto 1.02  gap stretto 1.02  pen 0.000  punti 522  tirato [2.52, 0.8, 2.52, 0.8]  9.0s
+clara                        gap sciolto 1.02  gap stretto 1.01  pen 0.000  punti 225  tirato [1.22, 0.41]  2.5s
+clara-aggrappante            gap sciolto 1.02  gap stretto 1.02  pen 0.000  punti 227  tirato [1.22, 0.41]  2.4s
+regina-clara                 gap sciolto 1.01  gap stretto 0.99  pen 0.010  punti 271  tirato [1.22, 0.41]  4.2s
+grande-regina-clara          gap sciolto 1.01  gap stretto 0.97  pen 0.010  punti 389  tirato [1.22, 0.41]  8.5s
+sollevamento                 gap sciolto 1.01  gap stretto 0.61  pen 0.010  punti 352  tirato [0.45, 0.14]  9.2s
+   ATTENZIONE sollevamento: compenetrazione possibile
+matassa-marinaio             gap sciolto 1.01  gap stretto 1.02  pen 0.010  punti 513  tirato []  9.6s
+matassa-briol                gap sciolto 1.01  gap stretto 1.02  pen 0.010  punti 655  tirato []  12.1s
+per-sacchi                   gap sciolto 1.02  gap stretto 0.81  pen 0.003  punti 128  tirato [1.35, 0.41]  2.1s
+   ATTENZIONE per-sacchi: compenetrazione possibile
+sagole-da-lancio             gap sciolto 1.01  gap stretto 0.99  pen 0.010  punti 335  tirato [1.52, 0.41]  7.0s
+stopper-ashley               gap sciolto 1.02  gap stretto 1.01  pen 0.001  punti 162  tirato [6.55, 2.62]  4.3s
+  (annotazioni non usate: [(0.05, 1.98)] )
+caviglia                     gap sciolto 1.02  gap stretto 1.02  pen 0.001  punti 146  tirato [1.0, 1.0]  1.2s
+chiatta                      gap sciolto 1.02  gap stretto 0.96  pen 0.001  punti 161  tirato [4.1, 0.6]  3.8s
+bocca-di-lupo-migliorata     gap sciolto 1.02  gap stretto 0.95  pen 0.001  punti 126  tirato [3.15, 1.26]  2.8s
+simon-sopra                  gap sciolto 1.02  gap stretto 1.01  pen 0.000  punti 206  tirato [2.02, 0.8, 2.02, 0.8]  2.7s
+simon-sotto                  gap sciolto 1.02  gap stretto 1.02  pen 0.000  punti 206  tirato [2.02, 0.8, 2.02, 0.8]  2.6s
+simon-doppio-sopra           gap sciolto 1.02  gap stretto 1.01  pen 0.001  punti 248  tirato [2.02, 0.8, 2.02, 0.8]  3.3s
+simon-doppio-sotto           gap sciolto 1.02  gap stretto 1.01  pen 0.000  punti 248  tirato [2.02, 0.8, 2.02, 0.8]  3.3s
+  (annotazioni non usate: [(0.15, 2.85), (-0.15, -2.85)] )
+gomene-sopra                 gap sciolto 1.04  gap stretto 1.02  pen 0.000  punti 152  tirato [2.02, 0.61, 2.02, 0.61]  1.6s
+  (annotazioni non usate: [(0.15, 2.85), (-0.15, -2.85)] )
+gomene-sotto                 gap sciolto 1.04  gap stretto 1.02  pen 0.000  punti 152  tirato [2.02, 0.61, 2.02, 0.61]  1.5s
+portoghese                   gap sciolto 0.99  gap stretto 0.88  pen 0.029  punti 274  tirato [1.52, 0.6, 1.52, 0.5]  9.7s
+   ATTENZIONE portoghese: compenetrazione possibile
+intugliatura-due-gasse       gap sciolto 1.01  gap stretto 0.86  pen 0.010  punti 384  tirato [2.02, 0.61, 2.02, 0.61]  6.7s
+   ATTENZIONE intugliatura-due-gasse: compenetrazione possibile
+broach                       gap sciolto 1.02  gap stretto 1.02  pen 0.000  punti 214  tirato [2.02, 0.61, 2.02, 0.61]  2.9s
+stretta-di-mano              gap sciolto 1.01  gap stretto 0.96  pen 0.010  punti 304  tirato [2.02, 0.61, 2.02, 0.61]  6.4s
+drago-doppio                 gap sciolto 1.01  gap stretto 1.00  pen 0.010  punti 247  tirato [2.02, 0.61]  4.3s
+gassa-cima-doppia            gap sciolto 1.00  gap stretto 0.98  pen 0.022  punti 536  tirato [1.52, 1.52]  25.3s
+gassa-con-rotonda            gap sciolto 1.02  gap stretto 1.02  pen 0.001  punti 339  tirato [1.57, 0.47]  5.2s
+incappellaggio-doppio        gap sciolto 1.01  gap stretto 1.01  pen 0.006  punti 198  tirato [1.0, 1.0]  2.6s
+estar                        gap sciolto 1.02  gap stretto 1.02  pen 0.000  punti 178  tirato [8.33, 3.33]  6.8s
+capestro                     gap sciolto 1.00  gap stretto 0.77  pen 0.024  punti 170  tirato [0.35, 0.11]  7.6s
+   ATTENZIONE capestro: compenetrazione possibile
+toro-estremita               gap sciolto 1.01  gap stretto 0.91  pen 0.010  punti 173  tirato [0.55, 0.55]  3.6s
+toro-doppino                 gap sciolto 1.01  gap stretto 0.91  pen 0.010  punti 173  tirato [0.55, 0.55]  3.5s
+snuggle                      gap sciolto 1.02  gap stretto 0.77  pen 0.004  punti 164  tirato [1.0, 0.3]  2.5s
+   ATTENZIONE snuggle: compenetrazione possibile
+icicle                       gap sciolto 1.01  gap stretto 0.95  pen 0.010  punti 242  tirato [2.15, 0.5]  5.4s
+boma                         gap sciolto 1.01  gap stretto 0.79  pen 0.010  punti 180  tirato [0.93, 0.28]  4.0s
+   ATTENZIONE boma: compenetrazione possibile
+muli                         gap sciolto 1.01  gap stretto 0.99  pen 0.010  punti 231  tirato [1.52, 0.5]  3.2s
+bandito                      gap sciolto 1.02  gap stretto 1.02  pen 0.002  punti 170  tirato [1.0, 0.41]  2.4s
+scotta-otto                  gap sciolto 1.02  gap stretto 0.97  pen 0.002  punti 234  tirato [4.93, 1.97, 4.93, 1.48]  6.5s
+scritto C:\Users\anton\Documents\app donatori\il-mare-in-testa-nodi\tools\..\app\data\geom.json 2229 KB
