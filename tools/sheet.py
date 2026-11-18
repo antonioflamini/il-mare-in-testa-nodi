@@ -10,7 +10,7 @@ if '--bg' in args:
     i = args.index('--bg'); bg = args[i + 1]; del args[i:i + 2]
 out, g, ids = args[0], args[1], args[2:]
 tmp = tempfile.mkdtemp()
-W, H = 640, 520
+W, H = int(os.environ.get('SW', 640)), int(os.environ.get('SH', 520))
 def one(k):
     p = os.path.join(tmp, k + '.png'); shot(k, g, p, W, H, bg); return p
 with ThreadPoolExecutor(3) as ex:

@@ -101,10 +101,10 @@ export const NODI = [
     sintesi: 'Unisce due cime dello stesso diametro, per usi leggeri. Ottimo per legare i terzaroli attorno alla vela.',
     regola: 'Destra su sinistra, poi sinistra su destra: i capi di ogni cima escono dallo stesso lato.',
     passi: [
-      { at: 0.0, t: 'La prima cima (bianca) si piega a doppino.' },
-      { at: 0.48, t: 'La seconda (arancio) scende passando sotto la curva bianca.' },
-      { at: 0.58, t: 'Incrocia i rami bianchi.' },
-      { at: 0.68, t: 'Abbraccia da sotto i rami bianchi e risale.' },
+      { at: 0.0, t: 'La prima cima (blu) si piega a doppino.' },
+      { at: 0.48, t: 'La seconda (arancio) scende passando sotto la curva blu.' },
+      { at: 0.58, t: 'Incrocia i rami blu.' },
+      { at: 0.68, t: 'Abbraccia da sotto i rami blu e risale.' },
       { at: 0.84, t: 'Esce dallo stesso lato da cui è entrata: ogni cima ha i suoi due capi insieme.' },
       { at: 1.0, t: 'Tira le due cime: i doppini si stringono uno nell’altro.' },
     ],
@@ -123,7 +123,7 @@ export const NODI = [
     sintesi: 'Unisce due cime di diametro diverso: la differenza è proprio ciò che lo fa tenere.',
     regola: 'La grossa fa il doppino, la sottile lo abbraccia e passa sotto sé stessa.',
     passi: [
-      { at: 0.0, t: 'La cima più grossa (bianca) fa un doppino.' },
+      { at: 0.0, t: 'La cima più grossa (blu) fa un doppino.' },
       { at: 0.56, t: 'La sottile (arancio) entra nel doppino salendo da sotto.' },
       { at: 0.66, t: 'Passa sopra un ramo del doppino…' },
       { at: 0.72, t: '…e gira dietro entrambi i rami.' },

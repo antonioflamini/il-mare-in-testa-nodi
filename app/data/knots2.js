@@ -166,7 +166,7 @@ export const NODI2 = [
     difficolta: 1, tenuta: 3, esame: false,
     sintesi: 'Il nodo di scotta fatto su una gassa già pronta (impiombata o con redancia).',
     regola: 'La gassa fa da doppino; la cima la abbraccia e passa sotto sé stessa.',
-    passi: P([0, 'La gassa è già fatta (qui la cima bianca).'], [0.5, 'La cima sale dentro la gassa.'], [0.7, 'Gira dietro i due lati.'], [0.88, 'Passa sotto sé stessa.'], [1, 'Serra.']),
+    passi: P([0, 'La gassa è già fatta (qui la cima blu).'], [0.5, 'La cima sale dentro la gassa.'], [0.7, 'Gira dietro i due lati.'], [0.88, 'Passa sotto sé stessa.'], [1, 'Serra.']),
     trucco: 'Con la redancia metallica nella gassa il nodo non si deforma mai.',
     trappola: 'Su una gassa molto grande il nodo può scorrere: stringi bene contro la base della gassa.',
     usi: ['Legare una cima all’occhio di un bozzello', 'Allungare una cima con la gassa impiombata'],

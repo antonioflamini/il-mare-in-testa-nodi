@@ -60,10 +60,10 @@ const cache = {};
 export function ropeMaterial(kind = 'main', renderer) {
   if (cache[kind]) return cache[kind];
   const palette = {
-    main: ['#f7f4ec', '#1e4f8a', 8],      // bianco con traccianti blu
-    second: ['#e0602f', '#f7f4ec', 8],    // arancio-rosso con traccianti bianchi
+    main: ['#2f8ae0', '#ffd21f', 4],      // blu mare con traccianti gialli (si legge su teak e su carta)
+    second: ['#e8622a', '#f7f4ec', 4],    // arancio con traccianti bianchi
     third: ['#e6c34a', '#0b2a4a', 4],     // giallo
-    teal: ['#0f7c8c', '#f2efe6', 4],
+    teal: ['#2f9e55', '#f7f4ec', 4],     // verde
   }[kind] || ['#f2efe6', '#0b2a4a', 4];
   const [c1, c2] = braidCanvas(palette[0], palette[1], palette[2]);
   const map = new THREE.CanvasTexture(c1);
@@ -76,7 +76,7 @@ export function ropeMaterial(kind = 'main', renderer) {
   const m = new THREE.MeshPhysicalMaterial({
     map, normalMap: nmap, normalScale: new THREE.Vector2(1.1, 1.1),
     roughness: 0.78, metalness: 0.0, sheen: 1.0, sheenRoughness: 0.6,
-    sheenColor: new THREE.Color(palette[0]).multiplyScalar(0.6),
+    sheenColor: new THREE.Color('#ffffff').multiplyScalar(0.25),
     vertexColors: true,
   });
   cache[kind] = m;

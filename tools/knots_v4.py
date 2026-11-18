@@ -64,9 +64,9 @@ def _buntline(slipped=False):
     pts = [(-1.0, -17, Rw), (-1.0, -9, Rw), (-1.0, -4.6, Rw), (-1.0, -3.6, Rw)]
     for th in np.linspace(0, 330, 12)[1:]:                         # un solo passaggio nell'anello
         pts.append((-1.0 + 1.0 * th / 330, -3 + Rw * np.sin(np.radians(th)), Rw * np.cos(np.radians(th))))
-    pts += [(0.4, -4.2, 0.5), (1.6, -6.0, 0.9), (2.0, -9.8, 1.2)]
+    pts += [(0.5, -4.0, 0.6), (1.4, -4.7, 1.0), (1.3, -5.5, 1.6)]
     cl = _clove_pts(rail_r=0.5, x0=-0.6, x1=1.35, x2=-1.35, x3=0.6, top=3.0, bottom=-12)
-    cl = [(-1.0 - y, -7.6 + x, Rw + z) for x, y, z in cl]          # parlato che sale verso l'anello
+    cl = [(-1.0 - y, -5.7 + x, Rw + z) for x, y, z in cl]          # parlato che sale verso l'anello
     pts += cl[2:-2]
     if slipped:
         a = cl[-3]
@@ -76,7 +76,7 @@ def _buntline(slipped=False):
         pts += cl[-2:]
     return dict(ropes=[rope3d(pts)], props=[ring, bolt, beam],
                 pulls=[dict(rope=0, at=0, dir=[0, -1, 0]), dict(rope=0, at=1, dir=[-1, 0, 0], w=0.3, max=0.6)],
-                view=_sv(elev=8, az=-25, zoom=1.5, ground=-17.5), jam=0.25, snug=0.8)
+                view=_sv(elev=8, az=-25, zoom=1.9, ground=-17.5), jam=0.25, snug=0.8)
 
 
 @knot

@@ -65,8 +65,8 @@ def _clara(turns=2, under=1, queen=False):
     thick = [(-16, 0, 0), (-8, 0, 0), (0, 0, 0), (8, 0, 0), (16, 0, 0)]
     return dict(ropes=[rope3d(pts), rope3d(thick)], solid={1: 'rope:second'}, radii=[THIN_R, THICK_R],
                 colors=['main', 'second'],
-                pulls=[dict(rope=0, at=0, dir=[1, 0, 0], max=1.2), dict(rope=0, at=1, dir=[1, -0.5, 0.3], w=0.3, max=0.4)],
-                view=dict(elev=35, az=-10, zoom=1.6), jam=0.25, snug=0.7)
+                pulls=[dict(rope=0, at=0, dir=[1, 0, 0], max=3.0), dict(rope=0, at=1, dir=[1, -0.5, 0.3], w=0.4, max=1.2)],
+                view=dict(elev=14, az=0, zoom=1.7), jam=0.3, snug=0.95)
 
 
 @knot

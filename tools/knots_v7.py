@@ -375,3 +375,65 @@ def scotta_otto():
     red, marks = _wraps(1)
     red = red[:-2] + [(1.0, 1.75), (1.9, 1.2), (1.6, 0.2), (0.9, -0.1), (0.4, 0.9), (0.9, 3.0), (1.2, 6.0), (1.25, 8.5)]
     return _sheet(red, marks, default='U', view=dict(elev=60, zoom=1.3))
+
+
+# ------------------------------------------------ versioni "vestite" (confronto con i riferimenti)
+from knots_src import KNOTS as _K
+
+
+def _barrel(n):
+    """Nodo semplice multiplo vestito: il capo passa nel nucleo e le spire lo
+    avvolgono n volte (botticella); i capi escono da parti opposte."""
+    R = 1.08
+    H = 1.05 * n
+    pts = [(-0.38, -14, 0), (-0.38, -6, 0), (-0.38, -1.4, 0), (-0.38, 0.2, 0), (-0.38, H - 0.2, 0.1),
+           (-0.2, H + 0.7, 0.6), (0.6, H + 0.6, 0.9)]
+    pts += vturn(60, 60 + 360 * n, H, 0.0, R)
+    pts += [(0.9, -0.7, 0.6), (0.38, -1.0, 0.0), (0.38, 0.2, 0.0), (0.38, H, 0.0), (0.38, H + 1.6, -0.1),
+            (0.38, H + 6, -0.1), (0.38, H + 13, 0)]
+    return dict(ropes=[rope3d(pts)], pulls=[dict(rope=0, at=0, dir=[0, -1, 0], max=1.0), dict(rope=0, at=1, dir=[0, 1, 0], max=1.0)],
+                view=dict(mode='stand', elev=12, az=-20, zoom=1.25), jam=0.3, snug=0.6)
+
+
+def _heaving(n, tail_down=False):
+    """Fasciatura su un doppino (nodo per sagole da lancio, nodo Uli): spire
+    regolari attorno ai due rami e capo infilato nell'asola in cima."""
+    R = 1.25
+    pts = [(-0.52, -16, 0), (-0.52, -6, 0), (-0.52, -0.5, 0), (-0.52, 1.05 * n + 1.0, 0),
+           (0, 1.05 * n + 1.8, 0), (0.52, 1.05 * n + 1.0, 0), (0.52, -0.2, 0), (0.6, -1.0, 0.4), (1.2, -0.6, 0.7)]
+    pts += vturn(60, 60 + 360 * n, -0.3, 1.05 * n - 0.3, R)
+    top = 1.05 * n
+    pts += [(1.1, top + 0.3, 0.8), (0.2, top + 0.9, 0.9), (0.0, top + 1.1, 0.0), (-0.1, top + 1.0, -0.9), (-1.0, top + 0.4, -1.2),
+            (-1.8, top - 0.6, -1.0), (-2.4, top - 2.0, -0.6)]
+    return dict(ropes=[rope3d(pts)], pulls=[dict(rope=0, at=0, dir=[0, -1, 0], max=0.6), dict(rope=0, at=1, dir=[-0.5, -1, 0], w=0.4, max=0.3)],
+                view=dict(mode='stand', elev=12, az=-20, zoom=0.9), jam=0.3, snug=0.6)
+
+
+_K['semplice-doppio'] = lambda: _barrel(2)
+_K['semplice-multiplo'] = lambda: _barrel(4)
+_K['uli'] = lambda: _heaving(10)
+_K['sagole-da-lancio'] = lambda: _heaving(7)
+
+
+def _briol():
+    """Matassa di briol: spire a goccia appese, il capo fascia tutte le spire
+    sotto il gancio e un doppino passa nell'occhio in alto."""
+    top, H, W, n = 10.0, 9.0, 2.8, 5
+    z0, dz = -2.2, 1.0
+    pts = [(-0.4, -12, z0 - 0.6), (-0.3, -4, z0 - 0.4), (0.0, top - H, z0)]
+    for t in np.linspace(np.pi, np.pi + 2 * np.pi * n, 30 * n)[1:]:
+        s = ((1 - np.cos(t)) / 2) ** 0.55
+        pts.append((W * np.sin(t) * s, top - H / 2 - (H / 2) * np.cos(t), z0 + dz * (t - np.pi) / (2 * np.pi)))
+    zc = z0 + dz * n / 2
+    zt = z0 + dz * n
+    Rb = dz * n / 2 + 0.9
+    pts += [(0.9, top - 0.8, zt + 0.4), (1.6, top - 1.6, zt + 0.6)]
+    pts += vturn(60, 60 - 360 * 4, top - 1.8, top - 5.4, Rb, ax=0, az=zc)          # fasciatura sotto il gancio
+    pts += [(0.6, top - 5.6, zc + Rb), (0.2, top - 3.0, zc + Rb + 0.7), (0.0, top - 1.2, zc + 0.8),     # doppino nell'occhio
+            (0.0, top + 0.6, zc), (0.0, top - 0.9, zc - 0.9), (-0.3, top - 3.0, zc - Rb - 0.7), (-0.5, top - 6.5, zc - Rb - 0.5)]
+    hook = dict(type='cyl', c=[0, top + 0.6, zc], axis=[0, 0, 1], r=0.6, h=9, mat='steel', deco=True)
+    return dict(ropes=[rope3d(pts)], props=[hook], pulls=[],
+                view=dict(mode='stand', elev=10, az=-30, zoom=0.8, ground=-12.5), snug=1.0)
+
+
+_K['matassa-briol'] = _briol

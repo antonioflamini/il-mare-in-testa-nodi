@@ -8,7 +8,7 @@ export const NODI3 = [
     id: 'simon-sopra', nome: 'Nodo Simple Simon (sopra)', altri: ['Simon semplice'], famiglia: 'giunzione', difficolta: 2, tenuta: 2, esame: false,
     sintesi: 'Unisce due cime, anche sintetiche e scivolose: la sottile abbraccia il doppino della grossa e incrocia sé stessa passando sopra.',
     regola: 'Doppino nella grossa; la sottile sale, abbraccia i rami in alto, incrocia sopra e ridiscende.',
-    passi: P([0, 'La cima grossa (bianca) fa un doppino.'], [0.55, 'La sottile sale dentro il doppino.'], [0.7, 'Abbraccia i due rami in alto.'], [0.85, 'Ridiscende incrociando sopra sé stessa.'], [1, 'Esce dal doppino accanto al proprio dormiente.']),
+    passi: P([0, 'La cima grossa (blu) fa un doppino.'], [0.55, 'La sottile sale dentro il doppino.'], [0.7, 'Abbraccia i due rami in alto.'], [0.85, 'Ridiscende incrociando sopra sé stessa.'], [1, 'Esce dal doppino accanto al proprio dormiente.']),
     trucco: 'È il fratello del nodo di scotta: se la scotta scivola su cime lisce, prova questo.',
     trappola: 'È il meno sicuro della famiglia: con cime molto scivolose usa la versione «sotto» o doppia.',
     usi: ['Unire cime sintetiche scivolose', 'Cime di diametro diverso'],

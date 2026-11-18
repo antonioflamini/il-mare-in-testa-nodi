@@ -1,5 +1,5 @@
 // Il Mare in Testa · Nodi — funziona anche senza rete (in barca!)
-const V = 'mit-nodi-v3';
+const V = 'mit-nodi-v4';
 const CORE = ['./', 'index.html', 'css/app.css', 'js/app.js', 'js/viewer.js', 'js/rope.js', 'data/knots.js', 'data/knots2.js', 'data/knots3.js', 'data/geom.json',
   'manifest.webmanifest', 'img/icon-192.png', 'img/icon-512.png'];
 const CDN = ['https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js',
