@@ -5,7 +5,7 @@ from concurrent.futures import ThreadPoolExecutor
 from PIL import Image, ImageDraw
 from shot import shot
 args = sys.argv[1:]
-bg = 'deck'
+bg = 'studio'
 if '--bg' in args:
     i = args.index('--bg'); bg = args[i + 1]; del args[i:i + 2]
 out, g, ids = args[0], args[1], args[2:]

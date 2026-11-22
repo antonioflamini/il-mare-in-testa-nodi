@@ -100,36 +100,40 @@ export class Viewer {
     this.el = container;
     this.opts = opts;
     const r = this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: !!opts.capture });
-    r.setPixelRatio(Math.min(window.devicePixelRatio, opts.pixelRatio || 2));
+    r.setPixelRatio(Math.min(window.devicePixelRatio, opts.pixelRatio || 1.75));
     r.outputColorSpace = THREE.SRGBColorSpace;
-    r.toneMapping = THREE.ACESFilmicToneMapping; r.toneMappingExposure = 1.05;
+    r.toneMapping = THREE.NeutralToneMapping; r.toneMappingExposure = 1.0;
     r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFSoftShadowMap;
     container.appendChild(r.domElement);
     const scene = this.scene = new THREE.Scene();
     const pm = new THREE.PMREMGenerator(r);
     scene.environment = pm.fromScene(new RoomEnvironment(), 0.04).texture;
     scene.environmentIntensity = 0.55;
-    this.camera = new THREE.PerspectiveCamera(32, 1, 0.1, 500);
+    this.camera = new THREE.PerspectiveCamera(28, 1, 0.1, 500);
     this.controls = new OrbitControls(this.camera, r.domElement);
     this.controls.enableDamping = true; this.controls.dampingFactor = 0.08;
     this.controls.minDistance = 6; this.controls.maxDistance = 140;
-    // luci: sole caldo + cielo
-    const hemi = new THREE.HemisphereLight('#e4f0ff', '#6a5236', 0.45); scene.add(hemi);
-    const sun = this.sun = new THREE.DirectionalLight('#fff4e2', 2.8);
+    // luci da studio: principale in alto a sinistra, riempimento morbido, controluce per staccare la cima
+    const hemi = this.hemi = new THREE.HemisphereLight('#f4f7ff', '#9a8a76', 0.95); scene.add(hemi);
+    const sun = this.sun = new THREE.DirectionalLight('#fff6ea', 2.9);
     sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048); sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.03;
-    sun.shadow.radius = 4;
+    sun.shadow.radius = 6;
     scene.add(sun, sun.target);
-    const rim = new THREE.DirectionalLight('#9cc7ff', 0.7); rim.position.set(-20, 10, -25); scene.add(rim);
-    // coperta in teak
+    const rim = this.rim = new THREE.DirectionalLight('#dfeaff', 1.1); scene.add(rim, rim.target);
+    // coperta in teak (modalita' "coperta")
     const deckTex = woodTexture('#b58f66', '#76553a', true); deckTex.repeat.set(4, 4);
     this.deck = new THREE.Mesh(new THREE.CircleGeometry(60, 96),
       new THREE.MeshStandardMaterial({ map: deckTex, roughness: 0.85 }));
     this.deck.rotation.x = -Math.PI / 2; this.deck.receiveShadow = true;
     scene.add(this.deck);
-    this.shadowOnly = new THREE.Mesh(new THREE.CircleGeometry(60, 64), new THREE.ShadowMaterial({ opacity: 0.22 }));
+    // pavimento e fondale che ricevono solo l'ombra (modalita' "studio" e "carta")
+    this.shadowOnly = new THREE.Mesh(new THREE.PlaneGeometry(400, 400), new THREE.ShadowMaterial({ opacity: 0.2 }));
     this.shadowOnly.rotation.x = -Math.PI / 2; this.shadowOnly.receiveShadow = true;
     scene.add(this.shadowOnly);
-    this.setBackdrop(opts.backdrop || 'deck');
+    this.backdropWall = new THREE.Mesh(new THREE.PlaneGeometry(400, 400), new THREE.ShadowMaterial({ opacity: 0.16 }));
+    this.backdropWall.receiveShadow = true;
+    scene.add(this.backdropWall);
+    this.setBackdrop(opts.backdrop || 'studio');
     this.root = new THREE.Group(); scene.add(this.root);
     this.ropes = []; this.knot = null;
     this.state = { g: 0, playing: false, speed: 1, loop: true, mirror: false };
@@ -140,10 +144,13 @@ export class Viewer {
   }
 
   setBackdrop(kind) {
-    this.backdrop = kind;
-    this.deck.visible = kind === 'deck';
-    this.shadowOnly.visible = kind !== 'deck';
-    this.shadowOnly.material.opacity = kind === 'paper' ? 0.16 : 0.22;
+    this.backdrop = kind === 'none' ? 'studio' : kind;
+    const deck = this.backdrop === 'deck';
+    this.deck.visible = deck;
+    this.shadowOnly.visible = !deck;
+    this.backdropWall.visible = !deck;
+    this.shadowOnly.material.opacity = this.backdrop === 'paper' ? 0.14 : 0.2;
+    this.backdropWall.material.opacity = this.backdrop === 'paper' ? 0.05 : 0.07;
   }
 
   resize() {
@@ -158,12 +165,18 @@ export class Viewer {
     this.ropes = [];
     this.id = id; this.geom = geom; this.meta = meta;
     const v = geom.view || {};
-    // "deck": il nodo e' disegnato nel piano xy e si appoggia in coperta
-    this.layFlat = v.mode !== 'stand';
+    // i nodi disegnati nel piano xy: in coperta si appoggiano sul teak, in studio
+    // si presentano in verticale, di fronte, come appesi (si leggono meglio)
+    this.flat = v.mode !== 'stand';
+    this.layFlat = this.flat && this.backdrop === 'deck';
     const holder = this.holder = new THREE.Group();
     if (this.layFlat) holder.rotation.x = -Math.PI / 2;
     this.root.add(holder);
-    (geom.props || []).forEach(p => holder.add(buildProp(p)));
+    (geom.props || []).forEach(p => {
+      // un palo che attraversa l'occhio punterebbe verso la camera e coprirebbe il nodo
+      if (this.flat && !this.layFlat && p.type === 'cyl' && Math.abs(p.axis[2]) > 0.9) return;
+      holder.add(buildProp(p));
+    });
     const kinds = geom.colors || ['main', 'second', 'third'];
     const solid = geom.solid || {};
     this.isSolid = geom.ropes.map((_, i) => !!solid[String(i)]);
@@ -173,7 +186,7 @@ export class Viewer {
       const material = !this.isSolid[i] ? ropeMaterial(kinds[i] || 'main', this.renderer)
         : sname.startsWith('rope:') ? ropeMaterial(sname.slice(5), this.renderer) : mat(sname);
       const rm = new RopeMesh(n, material, {
-        radius: (geom.radii && geom.radii[i]) || 0.5, radial: this.isSolid[i] ? 32 : 18,
+        radius: (geom.radii && geom.radii[i]) || 0.5, radial: this.isSolid[i] ? 32 : 22,
         whip: i === 0 ? '#b8231c' : '#0b2a4a', whipStand: i === 0 ? '#14202b' : '#4a1d0e' });
       rm.solid = this.isSolid[i]; rm.plain = rm.solid;
       rm.frames = frames.map(f => Float32Array.from(f));
@@ -185,11 +198,12 @@ export class Viewer {
     const L = geom.lengths.map((l, i) => this.isSolid[i] ? 0 : l);
     this.reveal = geom.reveal || (() => {
       const tot = L.reduce((a, b) => a + b, 0); let acc = 0;
-      return L.map(l => { if (!l) return [0, 0.001, 1]; const a = acc / tot; acc += l; return [a, acc / tot, 0]; });
+      return L.map((l, i) => { if (!l) return [0, 0.001, 1]; const a = acc / tot; acc += l; return [a, acc / tot, i === 0 ? 0.1 : 0]; });
     })();
     this.totalLen = L.reduce((a, b) => a + b, 0);
-    this.tieSeconds = Math.max(5, Math.min(16, this.totalLen / 5.5)) * (meta.tempo || 1);
-    this.tightSeconds = 2.6;
+    this.tieSeconds = Math.max(7, Math.min(14, this.totalLen / 5.5)) * (meta.tempo || 1);
+    this.tightSeconds = 2.4;
+    this.pauses = [];
     this.state.g = 0;
     this.applyMirror();
     this.render(1.0);   // inquadra il nodo appena legato (prima del serraggio)
@@ -234,23 +248,32 @@ export class Viewer {
     this.holder.children.forEach(ch => { if (!this.ropes.some(r => r.mesh === ch)) box.union(new THREE.Box3().setFromObject(ch)); });
     const c = box.getCenter(new THREE.Vector3()), size = box.getSize(new THREE.Vector3());
     const v = this.geom.view || {};
-    const radius = Math.max(size.length() / 2, 4.5);
+    const radius = Math.max(size.length() / 2, 4.0);
     const fov = this.camera.fov * Math.PI / 180;
     const fit = Math.min(fov, 2 * Math.atan(Math.tan(fov / 2) * this.camera.aspect));
-    const dist = radius / Math.sin(fit / 2) * margin * (v.zoom ? 1 / v.zoom : 1) * 0.82;
-    const el = (v.elev ?? (this.layFlat ? 62 : 18)) * Math.PI / 180;
-    const az = (v.az ?? 0) * Math.PI / 180;
+    const dist = radius / Math.sin(fit / 2) * margin * (v.zoom ? 1 / v.zoom : 1) * 0.86;
+    let elDeg, azDeg;
+    if (this.flat && !this.layFlat) { elDeg = 7; azDeg = -14; }          // nodo appeso, visto di fronte
+    else if (this.layFlat) { elDeg = v.elev ?? 62; azDeg = v.az ?? 0; }
+    else { elDeg = Math.min(v.elev ?? 14, 28); azDeg = v.az ?? -15; }
+    const el = elDeg * Math.PI / 180, az = azDeg * Math.PI / 180;
     const full = new THREE.Box3().setFromObject(this.holder);
-    const ground = this.layFlat ? full.min.y : (v.ground ?? full.min.y);
+    if (this.layFlat) { const dy = -full.min.y; this.holder.position.y += dy; c.y += dy; full.translate(new THREE.Vector3(0, dy, 0)); }
+    const ground = this.layFlat ? 0 : (v.ground ?? full.min.y - (this.flat ? 6 : 0));
     this.deck.position.y = ground - 0.001; this.shadowOnly.position.y = ground;
-    if (this.layFlat) { const dy = -full.min.y; this.holder.position.y += dy; c.y += dy; this.deck.position.y = -0.001; this.shadowOnly.position.y = 0; }
+    this.backdropWall.position.set(c.x, c.y, full.min.z - 6.0);
+    this.backdropWall.visible = this.backdrop !== 'deck' && !this.layFlat;
     this.controls.target.copy(c);
     this.camera.position.set(c.x + dist * Math.cos(el) * Math.sin(az), c.y + dist * Math.sin(el), c.z + dist * Math.cos(el) * Math.cos(az));
     this.camera.near = dist / 50; this.camera.far = dist * 8; this.camera.updateProjectionMatrix();
     this.controls.update();
-    const s = this.sun; s.position.set(c.x + 18, c.y + 40, c.z + 22); s.target.position.copy(c);
-    const R = radius * 1.6, sc = s.shadow.camera;
-    sc.left = -R; sc.right = R; sc.top = R; sc.bottom = -R; sc.near = 1; sc.far = 120; sc.updateProjectionMatrix();
+    const s = this.sun;
+    if (this.layFlat) s.position.set(c.x + 18, c.y + 40, c.z + 22);
+    else s.position.set(c.x - 9, c.y + 16, c.z + 42);   // luce quasi frontale: l'ombra resta dietro la cima
+    s.target.position.copy(c);
+    this.rim.position.set(c.x + 20, c.y + 12, c.z - 25); this.rim.target.position.copy(c);
+    const R = radius * 1.8, sc = s.shadow.camera;
+    sc.left = -R; sc.right = R; sc.top = R; sc.bottom = -R; sc.near = 1; sc.far = 150; sc.updateProjectionMatrix();
     this.home = { pos: this.camera.position.clone(), target: c.clone() };
   }
 
@@ -261,11 +284,17 @@ export class Viewer {
 
   get total() { return 1.35; }
 
+  setPauses(ats) { this.pauses = (ats || []).filter(a => a > 0.02 && a < 0.999); }
+
   step(dt) {
     const st = this.state;
     if (st.playing) {
+      if (st.pauseLeft > 0) { st.pauseLeft -= dt * st.speed; return; }   // breve sosta su ogni passaggio
       const rate = st.g < 1 ? 1 / this.tieSeconds : 0.35 / this.tightSeconds;
+      const g0 = st.g;
       st.g += dt * rate * st.speed;
+      const hit = this.pauses.find(a => g0 < a && st.g >= a);
+      if (hit !== undefined) { st.g = hit; st.pauseLeft = 0.6; }
       if (st.g >= this.total) {
         if (st.loop) { st.hold = (st.hold || 0) + dt; st.g = this.total; if (st.hold > 1.6) { st.g = 0; st.hold = 0; } }
         else { st.g = this.total; st.playing = false; this.onEnd && this.onEnd(); }

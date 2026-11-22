@@ -2,7 +2,7 @@
 uso: python shot.py <id> <g> <out.png> [w] [h] [bg] [querystring extra]"""
 import sys, subprocess, base64, re, os, tempfile, shutil
 EDGE = r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
-def shot(kid, g, out, w=900, h=700, bg='deck', extra='', tries=3):
+def shot(kid, g, out, w=900, h=700, bg='studio', extra='', tries=3):
     for t in range(tries):
         try:
             return _shot(kid, g, out, w, h, bg, extra)
@@ -11,7 +11,7 @@ def shot(kid, g, out, w=900, h=700, bg='deck', extra='', tries=3):
                 raise
 
 
-def _shot(kid, g, out, w=900, h=700, bg='deck', extra=''):
+def _shot(kid, g, out, w=900, h=700, bg='studio', extra=''):
     ud = tempfile.mkdtemp(prefix='edge-shot-')
     url = f"http://127.0.0.1:8771/app/render.html?k={kid}&g={g}&bg={bg}{extra}"
     r = subprocess.run([EDGE, '--headless=new', '--use-angle=swiftshader', '--enable-unsafe-swiftshader',

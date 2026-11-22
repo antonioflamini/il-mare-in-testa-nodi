@@ -7,7 +7,7 @@
 // Pagina di servizio: rende un fotogramma di un nodo (per il libro e i controlli).
 import { Viewer } from './js/viewer.js';
 const q = new URLSearchParams(location.search);
-const v = new Viewer(document.getElementById('v'), { capture: true, backdrop: q.get('bg') || 'deck', pixelRatio: 1 });
+const v = new Viewer(document.getElementById('v'), { capture: true, backdrop: q.get('bg') || 'studio', pixelRatio: 1 });
 const geom = await (await fetch('data/geom.json?' + Date.now())).json();
 const id = q.get('k');
 const g = geom[id];

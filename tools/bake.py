@@ -109,6 +109,8 @@ def main():
     if errs:
         print('nodi con errori:', errs)
     db = {k: db[k] for k in KNOTS if k in db}
+    import view_overrides
+    view_overrides.apply(db)
     with open(OUT, 'w', encoding='utf-8') as f:
         json.dump(db, f, separators=(',', ':'))
     print('scritto', OUT, os.path.getsize(OUT) // 1024, 'KB')

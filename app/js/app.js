@@ -99,6 +99,7 @@ function stepIndex(n, g) {
 function onTick(g) {
   if (!current) return;
   $('#scrub').value = g;
+  $('#viewer').dataset.g = g.toFixed(3);
   const k = stepIndex(current, g);
   const p = current.passi[k];
   $('#caption').innerHTML = `<b>${k + 1}/${current.passi.length}</b>${esc(p.t)}`;
@@ -112,12 +113,14 @@ async function openKnot(id, autoplay = true) {
   document.title = `${n.nome} · Il Mare in Testa · Nodi`;
   const geom = await loadGeom();
   if (!viewer) {
-    viewer = new Viewer($('#viewer'), { backdrop: store.get('bg', 'deck') });
+    viewer = new Viewer($('#viewer'), { backdrop: store.get('bg2', 'studio') });
     viewer.onTick = onTick;
+    window.__mitViewer = viewer;   // per i test automatici
     $('#bBg').classList.toggle('on', viewer.backdrop === 'deck');
   }
   $('#loading').style.display = 'none';
   viewer.load(n.id, geom[n.id], { tempo: 1 });
+  viewer.setPauses(n.passi.map(p => p.at));
   viewer.state.playing = autoplay;
   setPlayIcon(); onTick(0);
 }
@@ -138,7 +141,11 @@ function bindControls() {
   $('#speed').onchange = (e) => { viewer.state.speed = +e.target.value; };
   $('#bLoop').onclick = (e) => { viewer.state.loop = !viewer.state.loop; e.currentTarget.classList.toggle('on', viewer.state.loop); e.currentTarget.setAttribute('aria-pressed', viewer.state.loop); };
   $('#bMirror').onclick = (e) => { viewer.state.mirror = !viewer.state.mirror; viewer.applyMirror(); e.currentTarget.classList.toggle('on', viewer.state.mirror); e.currentTarget.setAttribute('aria-pressed', viewer.state.mirror); };
-  $('#bBg').onclick = (e) => { const k = viewer.backdrop === 'deck' ? 'none' : 'deck'; viewer.setBackdrop(k); store.set('bg', k); e.currentTarget.classList.toggle('on', k === 'deck'); };
+  $('#bBg').onclick = (e) => {
+    const k = viewer.backdrop === 'deck' ? 'studio' : 'deck';
+    viewer.setBackdrop(k); store.set('bg2', k); e.currentTarget.classList.toggle('on', k === 'deck');
+    const g = viewer.state.g; viewer.load(current.id, GEOM[current.id]); viewer.setPauses(current.passi.map(p => p.at)); viewer.seek(g);
+  };
   $('#bHome').onclick = () => viewer.resetView();
   $('#bFull').onclick = () => { const el = $('.stage'); document.fullscreenElement ? document.exitFullscreen() : el.requestFullscreen && el.requestFullscreen(); };
   viewer.onEnd = setPlayIcon;

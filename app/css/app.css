@@ -59,9 +59,9 @@ button { font: inherit; }
 .item .dot.done { background: var(--novita); }
 .item small { margin-left: auto; font-size: 11px; opacity: .8; }
 
-.stage { display: grid; grid-template-rows: 1fr auto; min-width: 0; background: linear-gradient(180deg, var(--stage1), var(--stage2)); }
+.stage { display: grid; grid-template-rows: minmax(0, 1fr) auto; min-width: 0; min-height: 0; background: linear-gradient(180deg, var(--stage1), var(--stage2)); }
 .viewer { position: relative; min-height: 320px; overflow: hidden; touch-action: none; }
-.viewer canvas { display: block; }
+.viewer canvas { display: block; position: absolute; inset: 0; width: 100% !important; height: 100% !important; }
 .loading { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); font-family: var(--serif); font-size: 18px; }
 .caption { position: absolute; left: 14px; right: 14px; top: 12px; margin: 0 auto; max-width: 620px; padding: 10px 14px; border-radius: 12px;
   background: rgba(11, 42, 74, .86); color: #fff; font-size: 15px; box-shadow: 0 6px 18px rgba(0,0,0,.2); }
@@ -117,7 +117,7 @@ ol.passi li.on::before { background: var(--teal); color: #fff; }
 .mode b { display: block; font-family: var(--serif); font-size: 19px; color: var(--navy); }
 .mode span { color: var(--muted); font-size: 14px; }
 .mode.on { border-color: var(--teal); box-shadow: 0 0 0 2px var(--teal-soft); }
-.trainer-viewer { height: 340px; border-radius: var(--r); overflow: hidden; background: linear-gradient(180deg, var(--stage1), var(--stage2)); position: relative; }
+.trainer-viewer { height: 340px; position: relative; border-radius: var(--r); overflow: hidden; background: linear-gradient(180deg, var(--stage1), var(--stage2)); position: relative; }
 .score { color: var(--muted); font-size: 14px; }
 .lead { font-size: 18px; color: var(--muted); }
 .small { font-size: 13px; color: var(--muted); }

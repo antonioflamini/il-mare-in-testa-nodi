@@ -60,8 +60,8 @@ const cache = {};
 export function ropeMaterial(kind = 'main', renderer) {
   if (cache[kind]) return cache[kind];
   const palette = {
-    main: ['#2f8ae0', '#ffd21f', 4],      // blu mare con traccianti gialli (si legge su teak e su carta)
-    second: ['#e8622a', '#f7f4ec', 4],    // arancio con traccianti bianchi
+    main: ['#2b7fe3', '#ffcf1a', 3],      // blu mare con traccianti gialli (si legge su teak e su carta)
+    second: ['#e5501c', '#fff3d6', 3],    // arancio con traccianti bianchi
     third: ['#e6c34a', '#0b2a4a', 4],     // giallo
     teal: ['#2f9e55', '#f7f4ec', 4],     // verde
   }[kind] || ['#f2efe6', '#0b2a4a', 4];
