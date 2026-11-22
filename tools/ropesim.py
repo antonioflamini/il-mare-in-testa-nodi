@@ -295,7 +295,7 @@ class Rope:
         return d.sum() / self.restc.sum()
 
     def min_gap(self):
-        self._refresh_pairs(1.5)
+        self._arc_pairs(1.5)
         a, b = self.pairs
         if len(a) == 0:
             return 9.0
@@ -322,6 +322,104 @@ class Rope:
                 break
         self._x0 = self.X.copy()
         return pen
+
+    # ------------------------------------------------ messa in tiro (nodo "vestito")
+    def _arc_pairs(self, radius=2.6):
+        """Come _refresh_pairs, ma due particelle della stessa cima si possono
+        urtare solo se sono lontane LUNGO LA CIMA (vale anche se la cima si accorcia)."""
+        X = self.X; n = len(X)
+        d2 = ((X[:, None, :] - X[None, :, :]) ** 2).sum(-1)
+        iu = np.triu_indices(n, 1)
+        m = d2[iu] < radius ** 2
+        a, b = iu[0][m], iu[1][m]
+        s = np.zeros(n)
+        for st, r in zip(self.start, self.ropes):
+            F = X[st:st + len(r)]
+            s[st:st + len(r)] = np.r_[0, np.cumsum(np.linalg.norm(np.diff(F, axis=0), axis=1))]
+        same = self.rid[a] == self.rid[b]
+        far = np.abs(s[a] - s[b]) > 1.7 * 2 * self.rad[a]
+        keep = ~same | far
+        sol = getattr(self, 'solid', [])
+        if sol:
+            iss = np.isin(self.rid[a], sol)
+            keep &= ~(same & iss)
+            keep &= ~(iss & np.isin(self.rid[b], sol))
+        self.pairs = (a[keep], b[keep])
+
+    def _bend_arc(self, X, mobile, rb=0.75, k=3):
+        """Raggio minimo di curvatura misurato sulla lunghezza reale tra i punti."""
+        for st, r, rr in zip(self.start, self.ropes, self.radii):
+            n = len(r)
+            if n <= 2 * k:
+                continue
+            F = X[st:st + n]
+            s = np.r_[0, np.cumsum(np.linalg.norm(np.diff(F, axis=0), axis=1))]
+            arc = s[2 * k:] - s[:-2 * k]
+            R = rb * rr / 0.5
+            cmin = 2 * R * np.sin(np.minimum(arc / (2 * R), np.pi / 2))
+            A = F[:-2 * k]; B = F[2 * k:]
+            v = B - A; d = np.linalg.norm(v, axis=1) + 1e-9
+            m = d < cmin
+            if not m.any():
+                continue
+            corr = v / d[:, None] * ((cmin - d) / 2 * m)[:, None] * 0.5
+            X[st:st + n - 2 * k] -= corr * mobile[st:st + n - 2 * k, None]
+            X[st + 2 * k:st + n] += corr * mobile[st + 2 * k:st + n, None]
+
+    def shrink(self, iters=600, rate=0.25, maxstep=0.03, pins=(), gap=1.0, coarse=0.7, **_):
+        """Mette la cima in tiro come quando si serra e si "veste" un nodo: ogni
+        tratto si sposta solo di lato (flusso che accorcia la curva, calcolato su
+        una versione rada della cima per essere stabile), finche' tocca altre
+        parti della cima o gli oggetti. Capi e punti indicati restano fermi; il
+        numero di particelle non cambia (i passaggi restano sincronizzati)."""
+        solid = set(getattr(self, 'solid', []))
+        mobile = np.ones(len(self.X))
+        for fr in solid:
+            mobile[self.rid == fr] = 0.0
+        for st, r in zip(self.start, self.ropes):
+            mobile[st] = 0; mobile[st + len(r) - 1] = 0
+        for p in pins:
+            mobile[self.particle(p['rope'], p['at'])] = 0
+        old_gap = self.gap
+        self.gap = gap
+        for it in range(iters):
+            if it % 5 == 0:
+                self._arc_pairs()
+            prev = self.X.copy()
+            for ri, (st, r) in enumerate(zip(self.start, self.ropes)):
+                if ri in solid:
+                    continue
+                F = self.X[st:st + len(r)]
+                s = np.r_[0, np.cumsum(np.linalg.norm(np.diff(F, axis=0), axis=1))]
+                nc = max(int(s[-1] / coarse), 6)
+                tc = np.linspace(0, s[-1], nc + 1)
+                C = np.c_[[np.interp(tc, s, F[:, kk]) for kk in range(3)]].T
+                L = np.zeros_like(C); L[1:-1] = 0.5 * (C[:-2] + C[2:]) - C[1:-1]
+                T = np.zeros_like(C); T[1:-1] = C[2:] - C[:-2]
+                T /= np.linalg.norm(T, axis=1)[:, None] + 1e-9
+                Ln = L - (L * T).sum(1)[:, None] * T
+                Ln[0] = 0; Ln[-1] = 0
+                disp = np.c_[[np.interp(s, tc, Ln[:, kk]) for kk in range(3)]].T
+                # un filo di livellamento locale per non far nascere zig-zag
+                Lf = np.zeros_like(F); Lf[1:-1] = 0.5 * (F[:-2] + F[2:]) - F[1:-1]
+                self.X[st:st + len(r)] += (rate * disp + 0.3 * Lf) * mobile[st:st + len(r), None]
+            self._clamp(prev, maxstep)
+            for _ in range(14):           # nessuna cima entra nell'altra
+                pen = self.collide(self.X, mobile)
+                self.props_push(self.X)
+                self._bend_arc(self.X, mobile)
+                if pen < 0.02:
+                    break
+            if pen > 0.08:                # troppo schiacciato: torna indietro a meta'
+                self.X = prev + 0.5 * (self.X - prev)
+                rate *= 0.97
+            self.props_push(self.X)
+        for it in range(60):
+            if it % 5 == 0:
+                self._arc_pairs()
+            self.collide(self.X, mobile); self.props_push(self.X)
+        self.gap = old_gap
+        return self.X.copy()
 
     # ------------------------------------------------ carenatura del percorso
     def fair(self, iters=160, lam=0.5, mu=-0.53, coarse=0.6, maxstep=0.06):

@@ -1,0 +1,77 @@
+nodo-semplice                gap sciolto 1.06  gap stretto 1.00  pen 0.000  punti 185  tirato vestito  3.6s
+savoia                       gap sciolto 1.02  gap stretto 1.00  pen 0.000  punti 174  tirato vestito  11.8s
+gassa-damante                gap sciolto 1.02  gap stretto 1.00  pen 0.000  punti 267  tirato vestito  10.2s
+piano                        gap sciolto 1.10  gap stretto 1.00  pen 0.000  punti 238  tirato vestito  4.2s
+scotta                       gap sciolto 1.02  gap stretto 1.00  pen 0.000  punti 208  tirato vestito  2.6s
+parlato                      gap sciolto 1.06  gap stretto 1.00  pen 0.002  punti 142  tirato vestito  3.2s
+stivatore                    gap sciolto 1.02  gap stretto 1.00  pen 0.000  punti 238  tirato vestito  5.3s
+volta-tonda                  gap sciolto 1.02  gap stretto 1.00  pen 0.005  punti 167  tirato vestito  12.7s
+bozza                        gap sciolto 1.02  gap stretto 1.00  pen 0.007  punti 269  tirato vestito  18.1s
+bocca-di-lupo                gap sciolto 1.02  gap stretto 1.00  pen 0.000  punti 135  tirato vestito  11.6s
+galloccia                    gap sciolto 1.02  gap stretto 1.00  pen 0.010  punti 314  tirato vestito  13.2s
+fiocco-fiammingo             gap sciolto 1.02  gap stretto 1.02  pen 0.000  punti 351  tirato []  27.3s
+ancorotto                    gap sciolto 1.02  gap stretto 1.00  pen 0.031  punti 211  tirato vestito  21.4s
+semplice-doppio              gap sciolto 1.02  gap stretto 1.00  pen 0.026  punti 167  tirato vestito  16.1s
+semplice-multiplo            gap sciolto 1.02  gap stretto 1.00  pen 0.045  punti 239  tirato vestito  20.4s
+uli                          gap sciolto 1.02  gap stretto 0.99  pen 0.039  punti 464  tirato vestito  118.4s
+gassa-rapido                 gap sciolto 1.02  gap stretto 1.00  pen 0.000  punti 267  tirato vestito  3.0s
+gassa-olanda                 gap sciolto 1.02  gap stretto 1.00  pen 0.000  punti 273  tirato vestito  25.0s
+gassa-ganciata               gap sciolto 1.02  gap stretto 1.00  pen 0.002  punti 301  tirato vestito  7.9s
+gassa-scorsoia               gap sciolto 1.02  gap stretto 1.00  pen 0.000  punti 446  tirato vestito  7.0s
+  (annotazioni non usate: [(0.75, 2.8)] )
+scotta-doppio                gap sciolto 1.02  gap stretto 1.00  pen 0.002  punti 270  tirato vestito  16.0s
+  (annotazioni non usate: [(1.45, 4.95), (0.75, 3.7), (0.75, 2.75)] )
+scotta-triplo                gap sciolto 1.02  gap stretto 0.99  pen 0.010  punti 343  tirato vestito  34.1s
+becket                       gap sciolto 1.02  gap stretto 1.00  pen 0.000  punti 193  tirato vestito  2.4s
+scotta-tre-vie               gap sciolto 1.02  gap stretto 1.00  pen 0.010  punti 343  tirato vestito  32.3s
+barcaiolo-ganciato           gap sciolto 1.02  gap stretto 1.00  pen 0.010  punti 154  tirato vestito  2.4s
+barcaiolo-doppino            gap sciolto 1.05  gap stretto 1.00  pen 0.002  punti 145  tirato vestito  1.4s
+drizza                       gap sciolto 1.02  gap stretto 1.00  pen 0.019  punti 187  tirato vestito  31.1s
+drizza-di-mura               gap sciolto 1.02  gap stretto 1.00  pen 0.004  punti 150  tirato vestito  12.9s
+drizza-ganciato              gap sciolto 1.02  gap stretto 1.00  pen 0.010  punti 169  tirato vestito  22.9s
+brancarella                  gap sciolto 1.02  gap stretto 1.00  pen 0.002  punti 220  tirato vestito  23.7s
+volta-di-bitta               gap sciolto 1.02  gap stretto 1.00  pen 0.009  punti 181  tirato vestito  8.6s
+carrick                      gap sciolto 1.02  gap stretto 1.00  pen 0.008  punti 204  tirato vestito  2.4s
+gasse-collegate              gap sciolto 1.02  gap stretto 1.00  pen 0.000  punti 534  tirato vestito  25.1s
+clara                        gap sciolto 1.02  gap stretto 1.00  pen 0.000  punti 227  tirato vestito  10.2s
+clara-aggrappante            gap sciolto 1.02  gap stretto 0.99  pen 0.000  punti 229  tirato vestito  7.6s
+regina-clara                 gap sciolto 1.02  gap stretto 1.00  pen 0.010  punti 277  tirato vestito  34.2s
+grande-regina-clara          gap sciolto 1.02  gap stretto 1.00  pen 0.010  punti 404  tirato vestito  60.7s
+sollevamento                 gap sciolto 1.02  gap stretto 0.99  pen 0.010  punti 380  tirato vestito  44.5s
+matassa-marinaio             gap sciolto 0.99  gap stretto 1.02  pen 0.010  punti 539  tirato []  78.4s
+matassa-briol                gap sciolto 1.02  gap stretto 1.02  pen 0.010  punti 778  tirato []  178.4s
+per-sacchi                   gap sciolto 1.02  gap stretto 1.00  pen 0.003  punti 136  tirato vestito  8.4s
+sagole-da-lancio             gap sciolto 1.02  gap stretto 0.99  pen 0.045  punti 355  tirato vestito  71.0s
+stopper-ashley               gap sciolto 1.02  gap stretto 1.00  pen 0.001  punti 169  tirato vestito  11.8s
+  (annotazioni non usate: [(0.05, 1.98)] )
+caviglia                     gap sciolto 1.02  gap stretto 1.00  pen 0.001  punti 149  tirato vestito  2.5s
+chiatta                      gap sciolto 1.02  gap stretto 1.00  pen 0.001  punti 165  tirato vestito  3.9s
+bocca-di-lupo-migliorata     gap sciolto 1.02  gap stretto 1.00  pen 0.001  punti 129  tirato vestito  4.7s
+simon-sopra                  gap sciolto 1.02  gap stretto 1.00  pen 0.000  punti 207  tirato vestito  14.7s
+simon-sotto                  gap sciolto 1.02  gap stretto 1.00  pen 0.000  punti 207  tirato vestito  5.1s
+simon-doppio-sopra           gap sciolto 1.02  gap stretto 1.00  pen 0.001  punti 251  tirato vestito  14.1s
+simon-doppio-sotto           gap sciolto 1.02  gap stretto 1.00  pen 0.000  punti 251  tirato vestito  23.7s
+  (annotazioni non usate: [(0.15, 2.85), (-0.15, -2.85)] )
+gomene-sopra                 gap sciolto 1.02  gap stretto 1.00  pen 0.000  punti 154  tirato vestito  1.7s
+  (annotazioni non usate: [(0.15, 2.85), (-0.15, -2.85)] )
+gomene-sotto                 gap sciolto 1.02  gap stretto 1.00  pen 0.000  punti 154  tirato vestito  1.5s
+portoghese                   gap sciolto 1.02  gap stretto 1.00  pen 0.029  punti 292  tirato vestito  40.5s
+intugliatura-due-gasse       gap sciolto 1.02  gap stretto 1.00  pen 0.010  punti 399  tirato vestito  65.0s
+broach                       gap sciolto 1.02  gap stretto 1.00  pen 0.000  punti 222  tirato vestito  5.3s
+stretta-di-mano              gap sciolto 1.02  gap stretto 1.00  pen 0.010  punti 324  tirato vestito  30.4s
+drago-doppio                 gap sciolto 1.02  gap stretto 1.00  pen 0.010  punti 259  tirato vestito  23.7s
+  (annotazioni non usate: [(-1.0, 9.1), (-0.92, 8.25), (-0.9, 3.75)] )
+gassa-cima-doppia            gap sciolto 1.02  gap stretto 0.99  pen 0.010  punti 473  tirato vestito  37.4s
+gassa-con-rotonda            gap sciolto 1.02  gap stretto 1.00  pen 0.001  punti 344  tirato vestito  10.8s
+incappellaggio-doppio        gap sciolto 1.02  gap stretto 1.00  pen 0.006  punti 207  tirato vestito  27.7s
+estar                        gap sciolto 1.02  gap stretto 1.00  pen 0.000  punti 184  tirato vestito  5.4s
+capestro                     gap sciolto 1.02  gap stretto 1.00  pen 0.024  punti 186  tirato vestito  32.0s
+toro-estremita               gap sciolto 1.02  gap stretto 1.00  pen 0.010  punti 180  tirato vestito  5.5s
+toro-doppino                 gap sciolto 1.02  gap stretto 1.00  pen 0.010  punti 180  tirato vestito  26.9s
+snuggle                      gap sciolto 1.02  gap stretto 1.00  pen 0.004  punti 175  tirato vestito  11.0s
+icicle                       gap sciolto 1.02  gap stretto 0.99  pen 0.010  punti 256  tirato vestito  9.2s
+boma                         gap sciolto 1.02  gap stretto 1.00  pen 0.010  punti 192  tirato vestito  24.5s
+muli                         gap sciolto 1.02  gap stretto 1.00  pen 0.010  punti 238  tirato vestito  9.3s
+bandito                      gap sciolto 1.02  gap stretto 1.00  pen 0.002  punti 179  tirato vestito  21.2s
+scotta-otto                  gap sciolto 1.02  gap stretto 1.00  pen 0.002  punti 239  tirato vestito  7.2s
+scritto C:\Users\anton\Documents\app donatori\il-mare-in-testa-nodi\tools\..\app\data\geom.json 820 KB

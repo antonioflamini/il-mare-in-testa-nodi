@@ -150,7 +150,7 @@ export class Viewer {
     this.shadowOnly.visible = !deck;
     this.backdropWall.visible = !deck;
     this.shadowOnly.material.opacity = this.backdrop === 'paper' ? 0.14 : 0.2;
-    this.backdropWall.material.opacity = this.backdrop === 'paper' ? 0.05 : 0.07;
+    this.backdropWall.material.opacity = this.backdrop === 'paper' ? 0.06 : 0.08;
   }
 
   resize() {
@@ -218,16 +218,15 @@ export class Viewer {
 
   // g in [0,1] = legatura, (1, 1+T] = serraggio
   render(g) {
+    // come nelle animazioni di riferimento: la cima si posa direttamente sulla
+    // forma finale, serrata e ordinata (nessuna fase "molle" poi strizzata)
     if (!this.ropes.length) return;
-    const tight = Math.max(0, Math.min(1, (g - 1) / 0.35));
     this.ropes.forEach((rm, i) => {
       const [a, b, pre] = this.reveal[i];
       let rv = g >= 1 ? 1 : Math.max(0, Math.min(1, (g - a) / Math.max(b - a, 1e-6)));
       rv = pre + (1 - pre) * rv;
-      const F = rm.frames, K = F.length - 1;
-      const x = this._ease(tight) * K, k0 = Math.min(Math.floor(x), K - 1), f = x - k0;
-      const A = F[k0], B = F[Math.min(k0 + 1, K)], out = rm.buf;
-      for (let j = 0; j < out.length; j++) out[j] = A[j] + (B[j] - A[j]) * f;
+      const F = rm.frames, out = rm.buf, src = F[F.length - 1];
+      for (let j = 0; j < out.length; j++) out[j] = src[j];
       if (rm.solid) rv = 1;
       rm.mesh.visible = rv > 0.002;
       rm.update(out, Math.max(rv, 0.004));
@@ -241,7 +240,7 @@ export class Viewer {
     this.holder.updateMatrixWorld(true);
     const box = new THREE.Box3(), p = new THREE.Vector3();
     this.ropes.forEach((rm) => {
-      const F = rm.frames[0], n = F.length / 3;
+      const F = rm.frames[rm.frames.length - 1], n = F.length / 3;
       const a = rm.solid ? Math.floor(n * 0.3) : Math.floor(n * 0.16), b = rm.solid ? Math.ceil(n * 0.7) : Math.ceil(n * 0.93);
       for (let i = a; i < b; i++) box.expandByPoint(p.set(F[3 * i], F[3 * i + 1], F[3 * i + 2]).applyMatrix4(this.holder.matrixWorld));
     });
@@ -261,7 +260,7 @@ export class Viewer {
     if (this.layFlat) { const dy = -full.min.y; this.holder.position.y += dy; c.y += dy; full.translate(new THREE.Vector3(0, dy, 0)); }
     const ground = this.layFlat ? 0 : (v.ground ?? full.min.y - (this.flat ? 6 : 0));
     this.deck.position.y = ground - 0.001; this.shadowOnly.position.y = ground;
-    this.backdropWall.position.set(c.x, c.y, full.min.z - 6.0);
+    this.backdropWall.position.set(c.x, c.y, full.min.z - 2.2);
     this.backdropWall.visible = this.backdrop !== 'deck' && !this.layFlat;
     this.controls.target.copy(c);
     this.camera.position.set(c.x + dist * Math.cos(el) * Math.sin(az), c.y + dist * Math.sin(el), c.z + dist * Math.cos(el) * Math.cos(az));
@@ -269,7 +268,7 @@ export class Viewer {
     this.controls.update();
     const s = this.sun;
     if (this.layFlat) s.position.set(c.x + 18, c.y + 40, c.z + 22);
-    else s.position.set(c.x - 9, c.y + 16, c.z + 42);   // luce quasi frontale: l'ombra resta dietro la cima
+    else s.position.set(c.x - 6, c.y + 9, c.z + 46);   // luce quasi frontale: l'ombra resta dietro la cima
     s.target.position.copy(c);
     this.rim.position.set(c.x + 20, c.y + 12, c.z - 25); this.rim.target.position.copy(c);
     const R = radius * 1.8, sc = s.shadow.camera;
@@ -282,7 +281,7 @@ export class Viewer {
     this.camera.position.copy(this.home.pos); this.controls.target.copy(this.home.target); this.controls.update();
   }
 
-  get total() { return 1.35; }
+  get total() { return 1.12; }
 
   setPauses(ats) { this.pauses = (ats || []).filter(a => a > 0.02 && a < 0.999); }
 
@@ -290,7 +289,7 @@ export class Viewer {
     const st = this.state;
     if (st.playing) {
       if (st.pauseLeft > 0) { st.pauseLeft -= dt * st.speed; return; }   // breve sosta su ogni passaggio
-      const rate = st.g < 1 ? 1 / this.tieSeconds : 0.35 / this.tightSeconds;
+      const rate = st.g < 1 ? 1 / this.tieSeconds : 0.12 / 1.2;
       const g0 = st.g;
       st.g += dt * rate * st.speed;
       const hit = this.pauses.find(a => g0 < a && st.g >= a);

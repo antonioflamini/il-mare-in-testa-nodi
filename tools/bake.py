@@ -33,6 +33,17 @@ def extend(P, L0, ws, we):
     return np.vstack([np.array(pre).reshape(-1, 3), P, np.array(post).reshape(-1, 3)])
 
 
+def export_idx(frames, n_pts):
+    """Esporta tenendo la corrispondenza dei punti materiali tra i fotogrammi
+    (stesse particelle), cosi' i passaggi restano sincronizzati."""
+    out = []
+    for ri in range(len(frames[0])):
+        N = len(frames[0][ri])
+        idx = np.round(np.linspace(0, N - 1, n_pts[ri])).astype(int)
+        out.append([[round(float(v), 3) for v in f[ri][idx].ravel()] for f in frames])
+    return out
+
+
 def export_frames(frames, n_pts, L0, weights):
     """frames: lista (fotogrammi) di liste (cime). Ricampiona ogni cima a n
     punti fissi (stesso n in tutti i fotogrammi, per poter interpolare)."""
@@ -61,14 +72,28 @@ def bake(kid, verbose=False):
     if spec.get('fair', 160):
         sim.fair(iters=spec.get('fair', 160))
     g0 = sim.min_gap()
-    res = sim.tighten(spec['pulls'], iters=spec.get('iters', 3000), step=spec.get('step', 0.025),
-                      frames=spec.get('frames', 7), alpha=spec.get('alpha', 0.04),
-                      pins=spec.get('pins', ()), jam=spec.get('jam', 0.08), snug=spec.get('snug', 0.55), verbose=verbose)
-    frames = [f for f, k in res]
-    cleaned = [frames[0]]
-    for f in frames[1:]:
-        cleaned.append(sim.split(sim.clean(np.vstack(f))))
-    frames = cleaned
+    import dress_overrides
+    if kid in dress_overrides.DRESS:
+        lvl = dress_overrides.DRESS[kid]
+        spec['dress'] = lvl > 0
+        if lvl:
+            spec['shrink'] = lvl
+    dress = spec.get('dress', True) and spec['pulls']
+    if dress:
+        # nodo "vestito": la cima si mette in tiro e si posa compatta (forma finale)
+        loose = sim.split(sim._x0)
+        tight = sim.split(sim.shrink(iters=spec.get('shrink', 150), pins=spec.get('pins', ())))
+        frames = [loose, tight]
+        sim.moved = 'vestito'
+    else:
+        res = sim.tighten(spec['pulls'], iters=spec.get('iters', 3000), step=spec.get('step', 0.025),
+                          frames=spec.get('frames', 7), alpha=spec.get('alpha', 0.04),
+                          pins=spec.get('pins', ()), jam=spec.get('jam', 0.08), snug=spec.get('snug', 0.55), verbose=verbose)
+        frames = [f for f, k in res]
+        cleaned = [frames[0]]
+        for f in frames[1:]:
+            cleaned.append(sim.split(sim.clean(np.vstack(f))))
+        frames = cleaned
     sim.X = np.vstack(frames[-1]); g1 = sim.min_gap()
     lens = [float(np.sum(np.linalg.norm(np.diff(r, axis=0), axis=1))) for r in frames[0]]
     weights = []
@@ -78,7 +103,7 @@ def bake(kid, verbose=False):
         weights.append((ws, we))
     n_pts = [max(int(L / EXPORT_STEP), 8) for L in lens]
     data = dict(
-        ropes=export_frames(frames, n_pts, lens, weights),
+        ropes=export_idx(frames, n_pts) if dress else export_frames(frames, n_pts, lens, weights),
         lengths=[round(L, 2) for L in lens],
         props=spec.get('props', []),
         view=spec.get('view', {}),

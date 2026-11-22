@@ -67,7 +67,7 @@ function renderCard(n) {
   `;
   $('#card').scrollTop = 0;
   $('#card').querySelectorAll('ol.passi li').forEach(li => li.addEventListener('click', () => {
-    viewer.state.playing = false; setPlayIcon(); viewer.seek(+li.dataset.at + (li.dataset.at === '1' ? 0.35 : 0.001));
+    viewer.state.playing = false; setPlayIcon(); viewer.seek(+li.dataset.at + (li.dataset.at === '1' ? 0.12 : 0.001));
   }));
   $('#learnedBox').addEventListener('change', (e) => { e.target.checked ? learned.add(n.id) : learned.delete(n.id); saveLearned(); renderList(); });
   bindQuiz($('#cardQuiz'));
@@ -129,7 +129,7 @@ function bindControls() {
   $('#bPlay').onclick = () => { if (viewer.state.g >= viewer.total - 1e-3) viewer.seek(0); viewer.state.playing = !viewer.state.playing; setPlayIcon(); };
   const jump = (dir) => {
     viewer.state.playing = false; setPlayIcon();
-    const ats = current.passi.map(p => p.at === 1 ? 1.35 : p.at + 0.001);
+    const ats = current.passi.map(p => p.at === 1 ? 1.12 : p.at + 0.001);
     const g = viewer.state.g;
     let t = dir > 0 ? ats.find(a => a > g + 0.01) : [...ats].reverse().find(a => a < g - 0.01);
     if (t === undefined) t = dir > 0 ? viewer.total : 0;
