@@ -323,6 +323,63 @@ class Rope:
         self._x0 = self.X.copy()
         return pen
 
+    # ------------------------------------------------ carenatura del percorso
+    def fair(self, iters=160, lam=0.5, mu=-0.53, coarse=0.6, maxstep=0.06):
+        """Toglie le ondulazioni inutili dal percorso (filtro di Taubin, che non
+        restringe occhi e giri) lavorando su una versione rada della cima, e
+        riportando lo spostamento sulle particelle. Le collisioni impediscono di
+        cambiare incroci o di attraversare gli oggetti; i capi restano fermi."""
+        solid = set(getattr(self, 'solid', []))
+        mobile = np.ones(len(self.X))
+        for fr in solid:
+            mobile[self.rid == fr] = 0.0
+        for st, r in zip(self.start, self.ropes):
+            mobile[st] = 0; mobile[st + len(r) - 1] = 0
+
+        def taubin(C):
+            for w in (lam, mu):
+                L = np.zeros_like(C)
+                L[1:-1] = 0.5 * (C[:-2] + C[2:]) - C[1:-1]
+                C = C + w * L
+            return C
+        for it in range(iters):
+            if it % 6 == 0:
+                self._refresh_pairs()
+            prev = self.X.copy()
+            for ri, (st, r) in enumerate(zip(self.start, self.ropes)):
+                if ri in solid:
+                    continue
+                F = self.X[st:st + len(r)]
+                s = np.r_[0, np.cumsum(np.linalg.norm(np.diff(F, axis=0), axis=1))]
+                n = max(int(s[-1] / coarse), 6)
+                tc = np.linspace(0, s[-1], n + 1)
+                C = np.c_[[np.interp(tc, s, F[:, k]) for k in range(3)]].T
+                D = taubin(C) - C
+                D[0] = 0; D[-1] = 0
+                disp = np.c_[[np.interp(s, tc, D[:, k]) for k in range(3)]].T
+                self.X[st:st + len(r)] += disp * mobile[st:st + len(r), None]
+            for _ in range(3):
+                self.collide(self.X, mobile)
+                self.props_push(self.X)
+                self.bend(self.X, mobile)
+            self._clamp(prev, maxstep)
+            self.props_push(self.X)
+        # ridistribuisce le particelle in modo uniforme e ricostruisce la cima
+        new = []
+        for ri, (st, r) in enumerate(zip(self.start, self.ropes)):
+            F = self.X[st:st + len(r)]
+            new.append(F.copy() if ri in solid else resample(F, SP))
+        self.ropes = new
+        self._build()
+        for _ in range(40):
+            self._refresh_pairs()
+            m = np.ones(len(self.X))
+            for fr in solid:
+                m[self.rid == fr] = 0.0
+            self.collide(self.X, m); self.props_push(self.X)
+        self._x0 = self.X.copy()
+        return self.penetration()
+
     def _clamp(self, prev, maxstep=0.12):
         dv = self.X - prev; n = np.linalg.norm(dv, axis=1)
         m = n > maxstep

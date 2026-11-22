@@ -58,6 +58,8 @@ def bake(kid, verbose=False):
     if solid and spec.get('fixed_rope') is None:
         spec['fixed_rope'] = solid
     pen = sim.relax(iters=spec.get('relax_iters', 700), alpha=spec.get('relax_alpha', 0.04), verbose=verbose, fixed_rope=spec.get('fixed_rope'))
+    if spec.get('fair', 160):
+        sim.fair(iters=spec.get('fair', 160))
     g0 = sim.min_gap()
     res = sim.tighten(spec['pulls'], iters=spec.get('iters', 3000), step=spec.get('step', 0.025),
                       frames=spec.get('frames', 7), alpha=spec.get('alpha', 0.04),
