@@ -63,6 +63,7 @@ function renderCard(n) {
     <div id="cardQuiz">${n.quiz.map((q, qi) => quizHtml(q, `${n.id}-${qi}`)).join('')}</div>
     <label class="learned"><input type="checkbox" id="learnedBox" ${learned.has(n.id) ? 'checked' : ''}> So farlo a occhi chiusi</label>
     ${n.volume ? `<p class="vol">Nei libri: <b>Il Mare in Testa</b>, ${esc(n.volume)} · e nel quaderno <b>I Nodi</b>.</p>` : '<p class="vol">Nel quaderno <b>Il Mare in Testa · I Nodi</b>.</p>'}
+    <p class="vol"><a href="mailto:ilmareintestaantonioflamini@gmail.com?subject=${encodeURIComponent('Nodi · Errore: ' + n.nome)}&body=${encodeURIComponent('Nodo: ' + n.nome + ' (' + location.origin + location.pathname + '#/nodo/' + n.id + ')\n\nCosa non torna:\n')}">Segnala un errore su questo nodo</a></p>
   `;
   $('#card').scrollTop = 0;
   $('#card').querySelectorAll('ol.passi li').forEach(li => li.addEventListener('click', () => {
